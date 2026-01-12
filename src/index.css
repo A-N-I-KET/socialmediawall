@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Rye&family=Courier+Prime:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* HACKOLUTION 2K26 - Wild West Design System */
+
+@layer base {
+  :root {
+    /* Parchment & Paper */
+    --background: 35 45% 80%;
+    --foreground: 20 50% 12%;
+
+    /* Card - Aged Wanted Poster */
+    --card: 38 50% 85%;
+    --card-foreground: 20 50% 12%;
+
+    /* Popover */
+    --popover: 38 50% 85%;
+    --popover-foreground: 20 50% 12%;
+
+    /* Primary - Sunset Orange */
+    --primary: 24 90% 45%;
+    --primary-foreground: 38 50% 95%;
+
+    /* Secondary - Deep Brown */
+    --secondary: 20 50% 18%;
+    --secondary-foreground: 38 50% 90%;
+
+    /* Muted - Dusty Sand */
+    --muted: 35 30% 70%;
+    --muted-foreground: 20 30% 35%;
+
+    /* Accent - Deep Red */
+    --accent: 0 85% 32%;
+    --accent-foreground: 38 50% 95%;
+
+    /* Destructive */
+    --destructive: 0 75% 40%;
+    --destructive-foreground: 38 50% 95%;
+
+    /* Borders & Inputs */
+    --border: 20 40% 30%;
+    --input: 20 40% 30%;
+    --ring: 24 90% 45%;
+
+    --radius: 0.25rem;
+
+    /* Sidebar - Sheriff's Office */
+    --sidebar-background: 20 50% 15%;
+    --sidebar-foreground: 38 50% 85%;
+    --sidebar-primary: 24 90% 50%;
+    --sidebar-primary-foreground: 38 50% 95%;
+    --sidebar-accent: 20 40% 25%;
+    --sidebar-accent-foreground: 38 50% 90%;
+    --sidebar-border: 20 30% 25%;
+    --sidebar-ring: 24 90% 45%;
+    
+    /* Western Custom Colors */
+    --parchment: 38 50% 88%;
+    --parchment-dark: 35 40% 75%;
+    --leather: 20 50% 18%;
+    --leather-light: 20 40% 28%;
+    --rust: 18 75% 35%;
+    --gold: 40 80% 50%;
+    --cream: 40 60% 92%;
+  }
+
+  .dark {
+    --background: 20 50% 8%;
+    --foreground: 38 50% 90%;
+    --card: 20 45% 12%;
+    --card-foreground: 38 50% 90%;
+    --popover: 20 45% 12%;
+    --popover-foreground: 38 50% 90%;
+    --primary: 24 90% 50%;
+    --primary-foreground: 20 50% 10%;
+    --secondary: 38 30% 75%;
+    --secondary-foreground: 20 50% 12%;
+    --muted: 20 30% 20%;
+    --muted-foreground: 38 30% 65%;
+    --accent: 0 75% 45%;
+    --accent-foreground: 38 50% 95%;
+    --destructive: 0 75% 45%;
+    --destructive-foreground: 38 50% 95%;
+    --border: 20 30% 25%;
+    --input: 20 30% 25%;
+    --ring: 24 90% 50%;
+    --sidebar-background: 20 50% 6%;
+    --sidebar-foreground: 38 50% 90%;
+    --sidebar-primary: 24 90% 55%;
+    --sidebar-primary-foreground: 20 50% 10%;
+    --sidebar-accent: 20 40% 15%;
+    --sidebar-accent-foreground: 38 50% 90%;
+    --sidebar-border: 20 30% 18%;
+    --sidebar-ring: 24 90% 50%;
+    --parchment: 38 30% 20%;
+    --parchment-dark: 35 25% 15%;
+    --leather: 38 40% 80%;
+    --leather-light: 38 35% 70%;
+    --rust: 18 70% 45%;
+    --gold: 40 75% 55%;
+    --cream: 40 30% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-family: 'Courier Prime', monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Rye', cursive;
+    @apply tracking-wide;
+  }
+}
+
+@layer components {
+  /* Wanted Poster Card Style */
+  .wanted-poster {
+    @apply relative bg-card border-4 border-leather rounded-sm;
+    background: linear-gradient(145deg, hsl(var(--parchment)), hsl(var(--parchment-dark)));
+    box-shadow: 
+      inset 0 0 60px rgba(139, 90, 43, 0.15),
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .wanted-poster::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 100px,
+        rgba(139, 90, 43, 0.03) 100px,
+        rgba(139, 90, 43, 0.03) 101px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 100px,
+        rgba(139, 90, 43, 0.03) 100px,
+        rgba(139, 90, 43, 0.03) 101px
+      );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Sheriff Badge Button */
+  .sheriff-button {
+    @apply relative inline-flex items-center justify-center gap-2 px-6 py-3 font-western text-sm uppercase tracking-widest;
+    @apply bg-primary text-primary-foreground;
+    @apply border-2 border-leather;
+    @apply transition-all duration-200;
+    @apply hover:bg-rust hover:scale-105;
+    @apply active:scale-95;
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  /* Torn edges effect */
+  .torn-edge {
+    position: relative;
+  }
+  
+  .torn-edge::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(135deg, hsl(var(--card)) 33.33%, transparent 33.33%), 
+                linear-gradient(225deg, hsl(var(--card)) 33.33%, transparent 33.33%);
+    background-size: 12px 12px;
+  }
+
+  /* Western Input */
+  .western-input {
+    @apply w-full px-4 py-3 bg-cream border-2 border-leather rounded-sm;
+    @apply font-body text-foreground placeholder:text-muted-foreground;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary;
+    @apply transition-all duration-200;
+  }
+}
+
+@layer utilities {
+  .font-western {
+    font-family: 'Rye', cursive;
+  }
+
+  .font-body {
+    font-family: 'Courier Prime', monospace;
+  }
+
+  .text-shadow-western {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .bg-leather {
+    background-color: hsl(var(--leather));
+  }
+
+  .bg-parchment {
+    background-color: hsl(var(--parchment));
+  }
+
+  .bg-rust {
+    background-color: hsl(var(--rust));
+  }
+
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+
+  .bg-cream {
+    background-color: hsl(var(--cream));
+  }
+
+  .text-leather {
+    color: hsl(var(--leather));
+  }
+
+  .text-rust {
+    color: hsl(var(--rust));
+  }
+
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+
+  .border-leather {
+    border-color: hsl(var(--leather));
+  }
+}

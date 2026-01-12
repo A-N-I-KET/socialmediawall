@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "approved_tweets": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": ["created_at"]
+    }
+  }
+}
