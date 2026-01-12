@@ -43,9 +43,9 @@ const Admin = () => {
     const unsubscribe = onValue(tweetsQuery, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const tweetsArray = Object.entries(data).map(([key, value]: [string, any]) => ({
+        const tweetsArray = Object.entries(data).map(([key, value]: [string, unknown]) => ({
           id: key,
-          ...value
+          ...(value as Record<string, unknown>)
         })).reverse(); // Reverse to show newest first
         setTweets(tweetsArray);
       } else {

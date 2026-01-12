@@ -26,10 +26,11 @@ const AdminTweetList = ({ tweets, onDelete }: AdminTweetListProps) => {
         description: "That tweet has been run out of town!",
       });
       onDelete();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to remove this dispatch. Try again, partner.';
       toast({
         title: "Tarnation!",
-        description: "Failed to remove this dispatch. Try again, partner.",
+        description: message,
         variant: "destructive",
       });
     }

@@ -66,10 +66,11 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
       });
       setTweetUrl('');
       onSuccess();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
         title: "Tarnation!",
-        description: error.message,
+        description: message,
         variant: "destructive",
       });
     } finally {
