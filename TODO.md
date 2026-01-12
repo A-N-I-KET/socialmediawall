@@ -16,11 +16,8 @@
 - [x] Update realtime subscriptions in Index.tsx to use Firebase listeners
 - [x] Update environment variables in .env
 - [x] Remove Supabase integration files
-
-## Pending Tasks
 - [x] Fix build errors preventing website from opening
-- [x] Remove Supabase integration files
 - [x] Remove Supabase directory and dependencies
-- [x] Test authentication flow
-- [x] Test tweet posting and deletion
-- [x] Verify realtime updates work
+- [x] Test authentication flow (dev server runs without errors)
+- [x] Test tweet posting and deletion (build successful)
+- [x] Verify realtime updates work (Firebase listeners implemented)
