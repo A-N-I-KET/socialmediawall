@@ -72,14 +72,14 @@ const Index = () => {
           </header>
 
           {/* Admin Link */}
-          <div className="text-center mb-8">
-            <Link 
+          {/* <div className="text-center mb-8">
+            <Link
               to="/admin"
               className="inline-flex items-center gap-2 font-western text-sm text-primary hover:text-rust transition-colors border-b-2 border-dashed border-primary hover:border-rust"
             >
               🤠 Sheriff's Office (Admin Panel)
             </Link>
-          </div>
+          </div> */}
 
           {/* Tweet Gallery */}
           <main>
