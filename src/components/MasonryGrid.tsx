@@ -1,38 +1,44 @@
-import TweetCard from './TweetCard';
-
-interface Tweet {
-  id: string;
-  tweet_id: string;
-  tweet_url: string;
-  created_at: string;
-}
+import { Masonry } from "react-plock";
+import { motion } from "framer-motion";
+import { Tweet } from "react-tweet";
 
 interface MasonryGridProps {
-  tweets: Tweet[];
+  tweets: any[];
 }
 
 const MasonryGrid = ({ tweets }: MasonryGridProps) => {
-  if (tweets.length === 0) {
-    return (
-      <div className="wanted-poster max-w-md mx-auto p-8 text-center">
-        <h3 className="font-western text-2xl text-rust mb-4 text-shadow-western">
-          NO DISPATCHES YET
-        </h3>
-        <p className="font-body text-muted-foreground">
-          The telegraph wires are quiet, partner. Check back soon for updates from the frontier.
-        </p>
-        <div className="mt-6 text-4xl">🌵</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-      {tweets.map((tweet, index) => (
-        <div key={tweet.id} className="break-inside-avoid">
-          <TweetCard tweetId={tweet.tweet_id} index={index} />
-        </div>
-      ))}
+    <div className="w-full">
+      <Masonry
+        items={tweets}
+        config={{
+          columns: [1, 2, 3],
+          gap: [24, 24, 24],
+          media: [640, 1024, 1280],
+        }}
+        render={(tweet) => (
+          <motion.div
+            key={tweet.id}
+            layout // Enables the sideways shift animation
+            initial={{ opacity: 0, scale: 0.8, x: -50 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="mb-6 break-inside-avoid relative group"
+          >
+            <div className="relative bg-[#FDF5E6] p-1 rounded-sm shadow-[5px_5px_15px_rgba(0,0,0,0.5)] transition-transform duration-300 hover:scale-[1.02] hover:-rotate-1">
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] opacity-50 mix-blend-multiply pointer-events-none z-10"></div>
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-4 h-4 rounded-full bg-[#8B4513] shadow-[2px_2px_4pxrgba(0,0,0,0.5),inset-1px_-1px_2px_rgba(255,255,255,0.3)]"></div>
+              <div className="relative z-0 theme-custom">
+                 <Tweet id={tweet.tweet_id} />
+              </div>
+              <div className="mt-2 border-t-2 border-[#8B4513] border-dashed pt-2 flex justify-between items-center opacity-70">
+                <span className="font-western text-[#8B4513] text-xs tracking-widest">WANTED</span>
+                <span className="font-mono text-[#5D4037] text-[10px]">{new Date(tweet.created_at).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      />
     </div>
   );
 };
