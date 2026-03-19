@@ -19,14 +19,14 @@ const AuthForm = ({ onSuccess }: AuthFormProps) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
-        title: "Welcome back, Sheriff!",
-        description: "You're now logged in to the office.",
+        title: "Welcome back",
+        description: "You have successfully logged in as admin.",
       });
       onSuccess();
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An error occurred';
       toast({
-        title: "Hold up there, partner!",
+        title: "Authentication Failed",
         description: errorMessage,
         variant: "destructive",
       });
@@ -36,40 +36,40 @@ const AuthForm = ({ onSuccess }: AuthFormProps) => {
   };
 
   return (
-    <div className="wanted-poster max-w-md mx-auto p-8">
-      <div className="text-center mb-6">
-        <h2 className="font-western text-2xl text-rust text-shadow-western">
-          SHERIFF'S OFFICE
+    <div className="glass-panel max-w-md mx-auto p-8 md:p-10">
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-white tracking-tight">
+          Admin Sign In
         </h2>
-        <p className="font-body text-sm text-muted-foreground mt-2">
-          Show your badge to enter
+        <p className="text-sm text-gray-400 mt-2">
+          Enter your credentials to manage the wall
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="font-western text-sm text-leather block mb-2">
-            Telegraph Address
+          <label className="text-sm font-medium text-gray-300 block mb-2">
+            Email Address
           </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="western-input"
-            placeholder="sheriff@frontier.com"
+            className="w-full px-4 py-2.5 bg-black border border-white/20 rounded-md text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all text-sm"
+            placeholder="admin@zerotoagent.com"
             required
           />
         </div>
 
         <div>
-          <label className="font-western text-sm text-leather block mb-2">
-            Secret Code
+          <label className="text-sm font-medium text-gray-300 block mb-2">
+            Password
           </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="western-input"
+            className="w-full px-4 py-2.5 bg-black border border-white/20 rounded-md text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all text-sm"
             placeholder="••••••••"
             required
             minLength={6}
@@ -79,9 +79,9 @@ const AuthForm = ({ onSuccess }: AuthFormProps) => {
         <button
           type="submit"
           disabled={loading}
-          className="sheriff-button w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="premium-button w-full py-2.5 mt-4"
         >
-          {loading ? 'Checking papers...' : 'Enter Office'}
+          {loading ? 'Authenticating...' : 'Sign In'}
         </button>
       </form>
     </div>

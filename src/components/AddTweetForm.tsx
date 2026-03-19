@@ -12,10 +12,6 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
   const [loading, setLoading] = useState(false);
 
   const extractTweetId = (url: string): string | null => {
-    // Match patterns like:
-    // https://twitter.com/user/status/1234567890
-    // https://x.com/user/status/1234567890
-    // https://twitter.com/user/status/1234567890?s=20
     const patterns = [
       /(?:twitter\.com|x\.com)\/\w+\/status\/(\d+)/,
       /\/status\/(\d+)/,
@@ -36,8 +32,8 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
     const tweetId = extractTweetId(tweetUrl);
     if (!tweetId) {
       toast({
-        title: "Whoa there!",
-        description: "That doesn't look like a valid Twitter/X link, partner.",
+        title: "Invalid URL",
+        description: "Please enter a valid Twitter/X post URL.",
         variant: "destructive",
       });
       return;
@@ -49,7 +45,7 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
       const user = auth.currentUser;
 
       if (!user) {
-        throw new Error("You need to be logged in, sheriff!");
+        throw new Error("You must be logged in to post.");
       }
 
       const tweetsRef = ref(database, 'approved_tweets');
@@ -61,15 +57,15 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
       });
 
       toast({
-        title: "Yeehaw!",
-        description: "Dispatch posted to the social wall!",
+        title: "Success",
+        description: "Post added to the social wall.",
       });
       setTweetUrl('');
       onSuccess();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       toast({
-        title: "Tarnation!",
+        title: "Error",
         description: message,
         variant: "destructive",
       });
@@ -81,15 +77,15 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="font-western text-sm text-leather block mb-2">
-          Paste Twitter/X Link
+        <label className="text-sm font-medium text-gray-300 block mb-2">
+          Twitter/X Post URL
         </label>
         <input
           type="url"
           value={tweetUrl}
           onChange={(e) => setTweetUrl(e.target.value)}
-          className="western-input"
-          placeholder="https://twitter.com/user/status/123456789"
+          className="w-full px-4 py-2.5 bg-black border border-white/20 rounded-md text-white placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all font-mono text-sm"
+          placeholder="https://x.com/user/status/123456789"
           required
         />
       </div>
@@ -97,9 +93,9 @@ const AddTweetForm = ({ onSuccess }: AddTweetFormProps) => {
       <button
         type="submit"
         disabled={loading}
-        className="sheriff-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
+        className="premium-button w-full py-2.5 mt-2"
       >
-        {loading ? '🤠 Saddling up...' : '🐎 SADDLE UP & POST'}
+        {loading ? 'Posting...' : 'Add to Wall'}
       </button>
     </form>
   );

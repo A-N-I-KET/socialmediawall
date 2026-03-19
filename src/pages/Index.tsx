@@ -1,10 +1,8 @@
 import { useEffect, useState, useMemo, memo } from 'react';
-import { Link } from 'react-router-dom';
 import { ref, onValue, query, orderByChild, limitToLast } from 'firebase/database';
 import { database } from '@/integrations/firebase/client';
 import MasonryGrid from '@/components/MasonryGrid';
-import hackolutionLogo from '@/assets/hackolution-logo.png';
-import hackolutionBg from '@/assets/hackolution-background.png';
+import vercelLogoImg from '@/assets/vercel.png';
 
 // --- Types ---
 interface Tweet {
@@ -14,150 +12,194 @@ interface Tweet {
   created_at: string;
 }
 
-// --- Dynamic Styles (Memoized) ---
-const GlobalStyles = memo(() => (
-  <style>{`
-    @keyframes sway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
-    @keyframes flicker { 0%, 100% { opacity: 0.15; } 25% { opacity: 0.1; } 50% { opacity: 0.25; } 75% { opacity: 0.12; } }
-    @keyframes float-dust { 0% { transform: translateY(100vh) translateX(-20px); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-20vh) translateX(20px); opacity: 0; } }
-    @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-    @keyframes grain { 0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-5%, -10%); } 20% { transform: translate(-15%, 5%); } 30% { transform: translate(7%, -25%); } 40% { transform: translate(-5%, 25%); } 50% { transform: translate(-15%, 10%); } 60% { transform: translate(15%, 0%); } 70% { transform: translate(0%, 15%); } 80% { transform: translate(3%, 35%); } 90% { transform: translate(-10%, 10%); } }
-    @keyframes bounce-subtle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    
-    /* Animation for Tumbleweed */
-    @keyframes roll-across {
-      0% { transform: translateX(-20vw) rotate(0deg); }
-      100% { transform: translateX(120vw) rotate(720deg); }
-    }
-    
-    .animate-sway { animation: sway 6s ease-in-out infinite; transform-origin: top center; }
-    .animate-flicker { animation: flicker 4s infinite alternate; }
-    .animate-marquee { animation: marquee 20s linear infinite; }
-    .animate-grain { animation: grain 8s steps(10) infinite; }
-    
-    .bg-wood-pattern {
-      background-color: #3E2723;
-      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 8px),
-                        repeating-linear-gradient(-45deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 10px);
-    }
-    .rope-texture {
-      background: repeating-linear-gradient(90deg, #8B7355 0px, #6B5645 2px, #8B7355 4px);
-    }
-  `}</style>
-));
+// --- Icons & Logos ---
+const VercelLogo = () => (
+  <img 
+    src={vercelLogoImg} 
+    alt="Vercel Logo" 
+    className="h-16 sm:h-18 w-auto object-contain brightness-0 invert transition-transform hover:scale-105" 
+  />
+);
 
 // --- Sub-Components ---
+const Navbar = memo(() => (
+  <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-b border-white/10">
+    <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <VercelLogo />
+      </div>
+      <div className="flex items-center gap-4 sm:gap-6">
+        <a href="#" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">Handbook</a>
+        <a href="https://v0.dev" target="_blank" rel="noreferrer" className="text-sm font-medium text-gray-400 hover:text-white transition-colors hidden sm:block">v0</a>
+        <a href="https://vercel.com" target="_blank" rel="noreferrer" className="text-sm font-medium text-gray-400 hover:text-white transition-colors hidden sm:block">Vercel</a>
+      </div>
+    </div>
+  </nav>
+));
 
-const Tumbleweed = memo(() => (
-  <div 
-    className="fixed bottom-[15%] left-0 z-20 pointer-events-none w-24 h-24 opacity-60 animate-[roll-across_25s_linear_infinite]"
-    style={{ animationDelay: '2s' }} 
-  >
-    {/* SVG Tumbleweed Construction */}
-    <svg viewBox="0 0 100 100" fill="none" stroke="#6D4C41" strokeWidth="1.5" className="w-full h-full drop-shadow-md">
-      {/* Outer messy circles */}
-      <path d="M50 10 C 20 10, 10 40, 10 50 C 10 80, 30 90, 50 90 C 80 90, 90 60, 90 50 C 90 20, 70 10, 50 10" strokeDasharray="12 4" />
-      <path d="M20 30 Q 50 5 80 30 T 80 70 T 20 70 T 20 30" strokeDasharray="8 6" transform="rotate(45 50 50)" />
-      <path d="M30 20 Q 10 50 30 80 T 70 80 T 70 20 T 30 20" strokeDasharray="10 5" transform="rotate(-30 50 50)" />
-      {/* Inner messy branches */}
-      <path d="M10 50 L 90 50 M 50 10 L 50 90" strokeDasharray="4 8" opacity="0.7" />
-      <path d="M20 20 L 80 80 M 80 20 L 20 80" strokeDasharray="3 6" opacity="0.7" />
-    </svg>
+const HeroBadge = memo(() => (
+  <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/10 transition-all hover:bg-white/[0.08]">
+    <span className="flex h-2 w-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,1)] animate-pulse"></span>
+    <span className="text-sm font-medium text-gray-200 tracking-wide">Powered by Vercel</span>
   </div>
 ));
 
-const DustLayer = memo(() => {
-  const particles = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    size: Math.random() * 4 + 1,
-    duration: Math.random() * 15 + 15,
-    delay: Math.random() * -30,
-  })), []);
+const CountdownTimer = memo(() => {
+  const targetDate = useMemo(() => new Date('2026-04-27T00:00:00').getTime(), []);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000),
+        });
+      }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
 
   return (
-    <div className="fixed inset-0 z-20 pointer-events-none overflow-hidden">
-      {particles.map((p) => (
-        <div key={p.id} className="absolute rounded-full bg-[#FDF5E6] mix-blend-overlay"
-          style={{ left: p.left, width: `${p.size}px`, height: `${p.size}px`, animation: `float-dust ${p.duration}s linear infinite`, animationDelay: `${p.delay}s`, opacity: 0.6 }}
-        />
+    <div className="flex items-center justify-center gap-4 sm:gap-6 mt-10 pt-8 border-t border-white/10 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+      {[
+        { label: 'Days', value: timeLeft.days },
+        { label: 'Hours', value: timeLeft.hours },
+        { label: 'Minutes', value: timeLeft.minutes },
+        { label: 'Seconds', value: timeLeft.seconds },
+      ].map((item, idx) => (
+        <div key={idx} className="flex flex-col items-center min-w-[64px] sm:min-w-[80px]">
+          <div className="text-3xl sm:text-4xl md:text-5xl font-mono font-bold text-white mb-2 tracking-tighter tabular-nums drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] transition-all">
+            {item.value.toString().padStart(2, '0')}
+          </div>
+          <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-widest font-semibold">
+            {item.label}
+          </div>
+        </div>
       ))}
     </div>
   );
 });
 
-const AtmosphericOverlays = memo(() => (
-  <>
-    <div className="fixed inset-0 bg-[#3E2723] mix-blend-multiply opacity-60 z-10 pointer-events-none" />
-    <div className="fixed inset-0 z-30 opacity-20 pointer-events-none mix-blend-overlay overflow-hidden">
-      <div className="w-[200%] h-[200%] absolute top-[-50%] left-[-50%] animate-grain bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
-    </div>
-    <div className="fixed inset-0 z-40 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(10,5,0,0.85)_100%)] pointer-events-none" />
-    <div className="fixed inset-0 z-40 bg-[radial-gradient(circle_at_50%_30%,rgba(255,160,50,0.15),transparent_70%)] animate-flicker pointer-events-none mix-blend-screen" />
-  </>
+const CTAButton = memo(() => (
+  <div className="mt-8 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
+    <a 
+      href="#" 
+      className="group relative inline-flex items-center justify-center px-8 py-3.5 sm:px-10 sm:py-4 font-semibold text-black bg-white rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] tracking-tight text-sm sm:text-base cursor-pointer"
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-white to-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <span className="relative z-10 flex items-center gap-2.5">
+        Register Now on Luma
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </span>
+    </a>
+  </div>
 ));
 
-const HangingSignHeader = memo(() => (
-  <header className="relative z-50 text-center mb-12 mt-4">
-    <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[380px] h-28 flex justify-between px-12 pointer-events-none -z-10">
-      <div className="w-2 h-full rope-texture shadow-[2px_0_8px_rgba(0,0,0,0.6)] rounded-sm"></div>
-      <div className="w-2 h-full rope-texture shadow-[2px_0_8px_rgba(0,0,0,0.6)] rounded-sm"></div>
-    </div>
-    <div className="animate-sway inline-block relative group">
-      <div className="bg-wood-pattern border-8 border-[#2a1b15] px-14 py-10 shadow-[0_25px_60px_rgba(0,0,0,0.9),inset_0_0_50px_rgba(0,0,0,0.6)] rounded-sm transform transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-[0_30px_70px_rgba(0,0,0,1),inset_0_0_50px_rgba(0,0,0,0.6)]">
-        <div className="absolute top-3 left-3 w-8 h-8 border-l-4 border-t-4 border-[#4A4A4A] rounded-tl-lg"></div>
-        <div className="absolute top-3 right-3 w-8 h-8 border-r-4 border-t-4 border-[#4A4A4A] rounded-tr-lg"></div>
-        <div className="absolute bottom-3 left-3 w-8 h-8 border-l-4 border-b-4 border-[#4A4A4A] rounded-bl-lg"></div>
-        <div className="absolute bottom-3 right-3 w-8 h-8 border-r-4 border-b-4 border-[#4A4A4A] rounded-br-lg"></div>
-        
-        <div className="absolute top-2 left-2 w-4 h-4 rounded-full bg-[#1a110d] shadow-[inset_-2px_-2px_4px_rgba(255,255,255,0.3),2px_2px_4px_rgba(0,0,0,0.8)]"></div>
-        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#1a110d] shadow-[inset_-2px_-2px_4px_rgba(255,255,255,0.3),2px_2px_4px_rgba(0,0,0,0.8)]"></div>
-        <div className="absolute bottom-2 left-2 w-4 h-4 rounded-full bg-[#1a110d] shadow-[inset_-2px_-2px_4px_rgba(255,255,255,0.3),2px_2px_4px_rgba(0,0,0,0.8)]"></div>
-        <div className="absolute bottom-2 right-2 w-4 h-4 rounded-full bg-[#1a110d] shadow-[inset_-2px_-2px_4px_rgba(255,255,255,0.3),2px_2px_4px_rgba(0,0,0,0.8)]"></div>
-
-        <Link to="/">
-          <img src={hackolutionLogo} alt="Hackolution 2K26" className="mx-auto max-w-[220px] md:max-w-[300px] drop-shadow-[0_6px_8px_rgba(0,0,0,0.7)] filter sepia-[0.3] brightness-95 contrast-125 hover:brightness-105 transition-all duration-300" />
-        </Link>
-        <div className="mt-6 mb-4 h-1 bg-gradient-to-r from-transparent via-[#8B4513] to-transparent"></div>
-        <h1 className="font-western text-5xl md:text-7xl text-[#ffebcd] tracking-[0.3em] uppercase drop-shadow-[3px_5px_0_rgba(40,20,10,1)] hover:tracking-[0.35em] transition-all duration-300">Social Wall</h1>
-        <div className="mt-4 flex items-center justify-center gap-4">
-          <div className="text-3xl text-[#D2691E]">★</div>
-          <span className="font-mono text-[#ffebcd]/70 text-sm tracking-[0.5em] uppercase">Est. 2026</span>
-          <div className="text-3xl text-[#D2691E]">★</div>
-        </div>
+const HeroSection = memo(() => (
+  <header className="relative z-10 pt-28 sm:pt-40 pb-12 sm:pb-20 text-center flex flex-col items-center justify-center min-h-[50vh] px-4">
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.08),transparent_50%)] pointer-events-none"></div>
+    
+    <div className="flex flex-row flex-wrap items-center justify-center gap-4 mb-8 sm:mb-10 animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+      <HeroBadge />
+      <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/10 transition-all hover:bg-white/[0.08]">
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <span className="font-semibold tracking-wide text-sm text-gray-200">27th April</span>
       </div>
     </div>
+
+    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white mb-6 animate-fade-in-up drop-shadow-2xl flex flex-col items-center" style={{ animationDelay: '0.1s' }}>
+      <span className="flex flex-wrap justify-center items-baseline gap-2 sm:gap-3 md:gap-4 whitespace-nowrap">
+        <span>Zero to</span> 
+        <span className="font-pixel text-[1.1em] align-baseline leading-none translate-y-[-0.03em] font-bold tracking-tight text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.1)] antialiased-false" style={{ imageRendering: 'pixelated' }}>Agent</span>
+      </span>
+      <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-300 via-gray-400 to-gray-600 block mt-2 sm:mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl whitespace-normal break-words text-center w-full max-w-[90vw]">
+        a worldwide build week
+      </span>
+    </h1>
+    
+    <p className="text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-4 animate-fade-in-up font-mono px-4" style={{ animationDelay: '0.2s' }}>
+      "to go from idea to agent with v0 and Vercel"
+    </p>
+
+    <p className="text-xs sm:text-sm text-gray-500/80 w-full max-w-[90vw] md:max-w-none mx-auto mb-2 animate-fade-in-up uppercase tracking-widest font-medium px-4 leading-relaxed whitespace-normal md:whitespace-nowrap" style={{ animationDelay: '0.25s' }}>
+      In association with Hackolution &nbsp;&bull;&nbsp; Community host Aniket Chakraborty
+    </p>
+
+    <CTAButton />
+    <CountdownTimer />
   </header>
 ));
 
-const TelegraphLoader = memo(() => (
-  <div className="relative max-w-lg mx-auto my-20 p-1">
-    <div className="absolute inset-0 bg-[#FDF5E6] rotate-2 shadow-2xl opacity-90 rounded-sm"></div>
-    <div className="absolute inset-0 bg-[#FDF5E6] -rotate-1 shadow-2xl opacity-80 rounded-sm"></div>
-    <div className="relative z-10 bg-[#FDF5E6] p-10 border-4 border-dashed border-[#8B4513] text-center rounded-sm shadow-[inset_0_0_20px_rgba(139,69,19,0.2)]">
-      <div className="flex justify-center gap-4 font-black text-[#8B4513] text-4xl mb-6 animate-pulse">
-        <span>•</span><span>•</span><span>•</span><span className="mx-3 tracking-wider">− − −</span><span>•</span><span>•</span><span>•</span>
-      </div>
-      <h2 className="font-western text-4xl text-[#8B4513] tracking-widest mb-3">TELEGRAPH BUSY</h2>
-      <div className="my-6 h-px bg-gradient-to-r from-transparent via-[#8B4513] to-transparent"></div>
-      <p className="font-mono text-sm text-[#5D4037] uppercase tracking-[0.3em] mb-6">Decoding signals from the frontier...</p>
-      <div className="mt-6 text-5xl animate-[spin-slow_3s_linear_infinite]">⚙️</div>
-    </div>
+const ModernLoader = memo(() => (
+  <div className="relative max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 px-4 sm:px-0">
+    {[1, 2, 3, 4, 5, 6].map((i) => (
+      <div key={i} className="h-[350px] sm:h-[400px] rounded-2xl bg-white/[0.02] border border-white/5 animate-pulse shadow-xl"></div>
+    ))}
   </div>
 ));
 
-const ScrollingTicker = memo(() => (
-  <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#1a0f0a] via-[#2a1b15] to-[#1a0f0a] border-t-4 border-[#8B4513] h-14 flex items-center overflow-hidden shadow-[0_-8px_30px_rgba(0,0,0,0.8)]">
-    <div className="whitespace-nowrap animate-marquee flex gap-16 text-[#ffebcd] font-western tracking-[0.2em] text-xl">
-      {["BREAKING: HACKERS SPOTTED", "REWARD: 1000 BTC", "SHERIFF WARNS: NO BUGS", "DEPLOYMENT TRAIN AT NOON", "KEEP YOUR API KEYS SAFE"].map((text, i) => (
-        <span key={i} className="flex items-center gap-3">
-          <span className="text-[#D2691E]">★</span>{text}<span className="text-[#D2691E]">★</span>
-        </span>
-      ))}
+const EmptyState = memo(() => (
+  <div className="flex flex-col items-center justify-center py-20 sm:py-32 text-center px-4">
+    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center mb-6 shadow-2xl">
+      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
     </div>
+    <h3 className="text-xl sm:text-2xl font-semibold text-white tracking-tight mb-3">No agents spotted yet</h3>
+    <p className="text-gray-400 text-xs sm:text-sm max-w-sm leading-relaxed">The build week has just begun. Dispatches will appear here automatically.</p>
   </div>
 ));
+
+const ScrollToTopFAB = memo(() => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 400) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
+  return (
+    <div className={`fixed bottom-6 sm:bottom-10 right-6 sm:right-10 z-[100] transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
+      <button 
+        onClick={scrollToTop}
+        className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-white/5 hover:bg-white/10 backdrop-blur-xl border border-white/20 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)] hover:border-white/30 focus:outline-none"
+        aria-label="Scroll to top"
+      >
+        <svg 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg" 
+          className="w-4 h-4 sm:w-5 sm:h-5 text-white opacity-70 group-hover:opacity-100 transition-opacity"
+        >
+          <path d="M12 2L24 22H0L12 2Z" fill="currentColor" />
+        </svg>
+      </button>
+    </div>
+  );
+});
 
 // --- Main Component ---
 
@@ -183,7 +225,7 @@ const Index = () => {
         });
       });
 
-      // Reverse to show Newest First (index 0) to trigger sideways animation
+      // Reverse to show Newest First (index 0)
       setTweets(data.reverse());
       setLoading(false);
     });
@@ -194,52 +236,54 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#1a0f0a] overflow-x-hidden text-[#FDF5E6] font-body">
-      <GlobalStyles />
-      <AtmosphericOverlays />
-      <DustLayer />
+    <div className="relative min-h-screen bg-black text-white selection:bg-white/20 selection:text-white overflow-x-hidden font-sans">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&display=swap');
+        .font-pixel {
+          font-family: 'Pixelify Sans', system-ui, sans-serif;
+          font-weight: 700;
+        }
+        .antialiased-false {
+          -webkit-font-smoothing: none;
+          font-smooth: never;
+        }
+      `}</style>
+      <Navbar />
       
-      {/* The Lonely Tumbleweed rolling in the background */}
-      <Tumbleweed />
+      <main className="relative z-10">
+        <HeroSection />
 
-      <div className="relative z-40 pb-20">
-        <div className="fixed inset-0 z-0 bg-cover bg-center opacity-40 grayscale-[30%] sepia-[50%]"
-          style={{ backgroundImage: `url(${hackolutionBg})` }}
-        />
+        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+          {/* Live Feed Header */}
+          <div className="flex justify-center items-center gap-3 mb-10 sm:mb-14 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <div className="h-px bg-gradient-to-r from-transparent to-white/10 w-12 sm:w-24"></div>
+            <div className="flex flex-row items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/10 shadow-sm backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="font-mono text-xs sm:text-sm font-semibold tracking-[0.2em] text-gray-300 uppercase">Live Feed</span>
+            </div>
+            <div className="h-px bg-gradient-to-l from-transparent to-white/10 w-12 sm:w-24"></div>
+          </div>
 
-        <div className="container max-w-[100rem] mx-auto px-4 md:px-8 py-8 relative z-10">
-          <HangingSignHeader />
-
-          <main className="transition-all duration-1000 ease-out min-h-[60vh]">
+          <div className="transition-all duration-1000 ease-out min-h-[40vh]">
             {loading ? (
-              <TelegraphLoader />
+              <ModernLoader />
             ) : (
-              <div className="relative animate-in fade-in duration-700">
-                <div className="absolute -inset-6 bg-wood-pattern rounded-xl opacity-90 shadow-[0_0_80px_rgba(0,0,0,0.9)] border-8 border-[#5D4037] -z-10"></div>
-                
-                <div className="bg-[#FDF5E6]/5 backdrop-blur-sm p-8 md:p-10 rounded-lg border-2 border-[#FDF5E6]/20 shadow-[inset_0_0_100px_rgba(0,0,0,0.6)] min-h-[50vh]">
-                  {tweets.length > 0 ? (
-                     <MasonryGrid tweets={tweets} />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-32 text-center opacity-70">
-                      <div className="text-9xl mb-6 text-[#8B4513] opacity-50 animate-[bounce-subtle_3s_ease-in-out_infinite]">☠</div>
-                      <h3 className="font-western text-5xl text-[#FDF5E6] tracking-[0.3em] mb-4 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">GHOST TOWN</h3>
-                      <div className="h-px w-32 bg-[#8B4513] mb-4"></div>
-                      <p className="font-mono uppercase text-sm tracking-[0.4em] text-[#FDF5E6]/60">No bounties posted yet.</p>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Decorative Screws */}
-                {['-top-2 -left-2', '-top-2 -right-2', '-bottom-2 -left-2', '-bottom-2 -right-2'].map((pos, i) => (
-                  <div key={i} className={`absolute ${pos} w-5 h-5 bg-[#1a0f0a] rounded-full border-2 border-[#8B7355] shadow-[0_0_10px_rgba(139,115,85,0.5)]`} />
-                ))}
+              <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                {tweets.length > 0 ? (
+                  <MasonryGrid tweets={tweets} />
+                ) : (
+                  <EmptyState />
+                )}
               </div>
             )}
-          </main>
+          </div>
         </div>
-      </div>
-      <ScrollingTicker />
+      </main>
+
+      <ScrollToTopFAB />
     </div>
   );
 };
