@@ -1,12 +1,37 @@
+import { memo } from "react";
 import { Masonry } from "react-plock";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Tweet } from "react-tweet";
 
-interface MasonryGridProps {
-  tweets: any[];
+export interface SocialTweet {
+  id: string;
+  tweet_id: string;
+  tweet_url?: string;
+  created_at?: string;
 }
 
-const MasonryGrid = ({ tweets }: MasonryGridProps) => {
+interface MasonryGridProps {
+  tweets: SocialTweet[];
+}
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 40, scale: 0.92, filter: 'blur(4px)' },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 150,
+      damping: 20,
+      mass: 0.7,
+      delay: Math.min(i * 0.06, 0.5),
+    },
+  }),
+};
+
+const MasonryGrid = memo(({ tweets }: MasonryGridProps) => {
   return (
     <div className="w-full">
       <Masonry
@@ -19,23 +44,45 @@ const MasonryGrid = ({ tweets }: MasonryGridProps) => {
         render={(tweet, index) => (
           <motion.div
             key={tweet.id + index}
-            layout
-            initial={{ opacity: 0, scale: 0.95, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25, delay: Math.min(index * 0.05, 0.4) }}
-            className="mb-6 break-inside-avoid relative group"
+            custom={index}
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
+            className="mb-6 break-inside-avoid relative group gpu-layer"
           >
-            <div className="relative glass-panel p-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_12px_40px_rgba(255,255,255,0.15)] overflow-hidden rounded-xl h-full">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent pointer-events-none"></div>
-              <div className="relative z-0 theme-dark w-full">
-                 <Tweet id={tweet.tweet_id} />
+            <motion.div
+              className="relative p-2 overflow-hidden rounded-2xl h-full"
+              style={{
+                background: 'rgba(255, 255, 255, 0.8)',
+                border: '2px solid rgba(0, 0, 0, 0.06)',
+                backdropFilter: 'blur(12px)',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
+              }}
+              whileHover={{
+                y: -6,
+                boxShadow: '0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06)',
+                borderColor: 'rgba(0, 0, 0, 0.1)',
+              }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            >
+              {/* Subtle gradient overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none rounded-2xl"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(245,196,0,0.03) 0%, transparent 50%, rgba(163,230,53,0.03) 100%)',
+                }}
+              />
+              {/* Tweet embed – light theme */}
+              <div className="relative z-0 w-full" data-theme="light">
+                <Tweet id={tweet.tweet_id} />
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       />
     </div>
   );
-};
+});
 
 export default MasonryGrid;

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700;800;900&family=Pixelify+Sans:wght@700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,26 +6,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 93%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 93%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 93%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --radius: 0.5rem;
+    --background: 43 60% 98%;
+    --foreground: 0 0% 10%;
+    --card: 43 40% 96%;
+    --card-foreground: 0 0% 10%;
+    --popover: 43 40% 96%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 43 30% 92%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 43 20% 90%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 85% 59%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 85% 59%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 43 20% 85%;
+    --input: 43 20% 88%;
+    --ring: 0 85% 59%;
+    --radius: 0.75rem;
+
+    --hack-cream: #FDFBF7;
+    --hack-black: #000000;
+    --hack-red: #FF3B30;
+    --hack-yellow: #F5C400;
+    --hack-lime: #A3E635;
+    --hack-purple: #8B5CF6;
+    --hack-orange: #FB923C;
+    --hack-coral: #FF6B6B;
   }
 }
 
@@ -34,24 +43,370 @@
     @apply border-border;
   }
 
+  html {
+    /* Smooth scroll with native performance */
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
   body {
-    @apply bg-background text-foreground tracking-tight antialiased;
-    font-family: 'Inter', sans-serif;
+    background-color: var(--hack-cream);
+    color: #1a1a1a;
+    font-family: 'Inter', 'Poppins', sans-serif;
+    @apply tracking-tight antialiased;
+    /* Performance: promote body to its own layer */
+    overflow-x: hidden;
   }
 }
 
+/* ── GPU-optimised yellow grid ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(245, 196, 0, 0.18) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 196, 0, 0.18) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform; /* GPU layer */
+  transform: translateZ(0);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════
+   CINEMATIC LOADER (Phase 0)
+   ═══════════════════════════════════════ */
+.cinematic-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  pointer-events: none;
+}
+
+.loader-logo {
+  position: relative;
+  z-index: 2;
+  height: 72px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Pulsing radial glow behind logo */
+.loader-glow {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 196, 0, 0.2) 0%, rgba(255, 59, 48, 0.06) 50%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Thin accent line under logo */
+.loader-accent-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  border-radius: 2px;
+  transform-origin: center;
+}
+
+/* ═══════════════════════════════════════
+   COMPONENT STYLES
+   ═══════════════════════════════════════ */
 @layer components {
   .glass-panel {
-    @apply bg-white/[0.02] border border-white/[0.08] backdrop-blur-md rounded-xl shadow-[0_4px_30px_rgba(0,0,0,0.1)];
-  }
-  
-  .premium-button {
-    @apply relative inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
-    @apply bg-white text-black hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.1)];
+    background: rgba(255, 255, 255, 0.75);
+    border: 2px solid rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
   }
 
-  .text-glow {
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+  .glass-panel:hover {
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 8px 40px rgba(0, 0, 0, 0.1),
+      0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+
+  .premium-button {
+    @apply relative inline-flex items-center justify-center rounded-full text-sm font-bold transition-all duration-300;
+    background: #000;
+    color: #fff;
+    box-shadow: 4px 4px 0 rgba(245, 196, 0, 0.5);
+  }
+
+  .premium-button:hover {
+    background: var(--hack-red);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 6px 6px 0 rgba(255, 59, 48, 0.25);
+  }
+}
+
+/* ═══════════════════════════════════════
+   HACK SECTIONS (Prizes / Offerings)
+   ═══════════════════════════════════════ */
+
+.hack-section {
+  position: relative;
+  overflow: hidden;
+  background: #FDFBF7;
+  padding: 80px 6% 90px;
+}
+
+.hack-section-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(245, 196, 0, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 196, 0, 0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Section Header ── */
+.hack-section-header {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.hack-section-tag {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #000;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid rgba(0, 0, 0, 0.06);
+  border-radius: 50px;
+  padding: 6px 20px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(8px);
+}
+
+.hack-section-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  color: #000;
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+  text-shadow:
+    2px 2px 0 rgba(0,0,0,0.04),
+    3px 3px 0 rgba(0,0,0,0.02);
+}
+
+.hack-section-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: rgba(0,0,0,0.5);
+  margin: 0;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Card Grid ── */
+.hack-cards-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hack-cards-single {
+  max-width: 500px;
+}
+
+/* ── Card ── */
+.hack-card {
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 32px 28px;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.05),
+    0 1px 3px rgba(0,0,0,0.03);
+  transition: border-color 0.3s ease;
+  cursor: default;
+}
+
+.hack-card:hover {
+  border-color: rgba(0,0,0,0.1);
+}
+
+.hack-card-featured {
+  border: 3px solid rgba(245, 196, 0, 0.25);
+  background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(245,196,0,0.04) 100%);
+}
+
+.hack-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.hack-card-icon-gold {
+  background: rgba(245, 196, 0, 0.1);
+  border: 2px solid rgba(245, 196, 0, 0.15);
+}
+
+.hack-card-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #F5C400;
+  background: rgba(245, 196, 0, 0.1);
+  border: 1.5px solid rgba(245, 196, 0, 0.2);
+  border-radius: 50px;
+  padding: 4px 14px;
+  margin-bottom: 12px;
+}
+
+.hack-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: #000;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+.hack-card-desc {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: rgba(0,0,0,0.55);
+  line-height: 1.65;
+  margin: 0 0 16px;
+}
+
+.hack-card-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hack-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.04);
+  border-radius: 50px;
+  padding: 5px 14px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Decorative Shapes ── */
+.hack-section-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.hack-deco { position: absolute; }
+.hack-deco-1 { top: 8%; right: 8%; animation: float 7s ease-in-out infinite; }
+.hack-deco-2 { bottom: 12%; left: 5%; animation: float 9s ease-in-out infinite 0.5s; }
+.hack-deco-3 { top: 20%; left: 3%; animation: float 8s ease-in-out infinite 1s; }
+.hack-deco-4 { bottom: 10%; right: 4%; animation: float 10s ease-in-out infinite; }
+.hack-deco-5 { top: 15%; left: 6%; animation: float 8s ease-in-out infinite 0.8s; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hack-section {
+    padding: 56px 16px 64px;
+  }
+
+  .hack-section-header {
+    margin-bottom: 32px;
+  }
+
+  .hack-section-title {
+    font-size: 2rem;
+  }
+
+  .hack-section-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .hack-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .hack-card {
+    padding: 24px 20px;
+  }
+
+  .hack-card-title { font-size: 1.15rem; }
+  .hack-card-desc { font-size: 0.82rem; }
+  .hack-deco { display: none; }
+}
+
+/* ═══════════════════════════════════════
+   PERFORMANCE UTILITIES
+   ═══════════════════════════════════════ */
+
+/* Promote animated elements to GPU layer */
+.gpu-layer {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Contain layout recalculations */
+.contain-paint {
+  contain: layout paint;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

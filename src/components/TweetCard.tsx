@@ -18,13 +18,13 @@ const TweetCard = ({ tweetId, index = 0 }: TweetCardProps) => {
         <TwitterTweetEmbed 
           tweetId={tweetId}
           options={{
-            theme: 'dark',
+            theme: 'light',
             align: 'center',
             width: 300,
             conversation: 'none'
           }}
           placeholder={
-            <div className="flex items-center justify-center h-48 text-gray-500 font-sans">
+            <div className="flex items-center justify-center h-48 font-sans" style={{ color: 'rgba(0,0,0,0.4)' }}>
               <div className="animate-pulse text-center">
                 <p className="text-sm">Loading...</p>
               </div>

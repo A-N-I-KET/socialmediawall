@@ -1,0 +1,657 @@
+/* ════════════════════════════════════════════════════════
+   HERO HACKATHON – Immersive Interactive Experience
+   Multi-layer parallax ∙ 3D shapes ∙ Glitch type
+   ════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Pixelify+Sans:wght@700&display=swap');
+
+/* ── Root Section ── */
+.hero-hackathon {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #FDFBF7;
+  padding: 40px 6% 80px;
+  perspective: 1200px;
+  contain: layout;
+  cursor: default;
+}
+
+/* ══════════════════════════════════════
+   MULTI-LAYER GRID SYSTEM
+   ══════════════════════════════════════ */
+
+.hero-grid-fine {
+  position: absolute;
+  inset: -30px;                       /* extend to prevent edge gaps */
+  background-image:
+    linear-gradient(to right, rgba(245, 196, 0, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 196, 0, 0.22) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.hero-grid-coarse {
+  position: absolute;
+  inset: -30px;
+  background-image:
+    linear-gradient(to right, rgba(245, 196, 0, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 196, 0, 0.09) 1px, transparent 1px);
+  background-size: 120px 120px;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ══════════════════════════════════════
+   CURSOR-FOLLOWING WARM GLOW
+   ══════════════════════════════════════ */
+
+.hero-mouse-glow {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 196, 0, 0.08) 0%, rgba(251, 146, 60, 0.03) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  filter: blur(30px);
+  will-change: left, top;
+}
+
+/* ── Depth gradient overlay ── */
+.hero-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(253, 251, 247, 0.7) 0%, transparent 55%),
+    radial-gradient(ellipse at 0% 0%, rgba(245, 196, 0, 0.03) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Phase 7: Focus dim overlay (momentary emphasis reducer) ── */
+.hero-focus-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   FLOATING SHAPES SYSTEM
+   ══════════════════════════════════════ */
+
+.hero-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-shape {
+  position: absolute;
+  filter: drop-shadow(3px 5px 8px rgba(0,0,0,0.12));
+  pointer-events: auto;
+}
+
+.shape-interactive {
+  cursor: pointer;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* 3 float patterns (CSS animations, composable with framer transforms) */
+.shape-float-a { animation: float-bob-a 7s ease-in-out infinite; }
+.shape-float-b { animation: float-bob-b 9s ease-in-out infinite; }
+.shape-float-c { animation: float-bob-c 11s ease-in-out infinite; }
+
+@keyframes float-bob-a {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(3deg); }
+}
+@keyframes float-bob-b {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33%      { transform: translate(-6px, -12px) rotate(-2deg); }
+  66%      { transform: translate(4px, -18px) rotate(2deg); }
+}
+@keyframes float-bob-c {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25%      { transform: translate(5px, -8px) rotate(2deg); }
+  50%      { transform: translate(-3px, -16px) rotate(-3deg); }
+  75%      { transform: translate(4px, -6px) rotate(1deg); }
+}
+
+/* ── Shape Positions ── */
+.shape-1  { top: 8%;  left: 2%; }
+.shape-2  { top: 5%;  left: 42%; }
+.shape-3  { top: 16%; left: 10%; }
+.shape-4  { top: 28%; right: 22%; }
+.shape-5  { top: 58%; left: 3%; }
+.shape-6  { top: 42%; left: 48%; }
+.shape-7  { top: 4%;  right: 28%; }
+.shape-8  { bottom: 24%; left: 2%; }
+.shape-9  { bottom: 20%; right: 5%; }
+.shape-10 { top: 44%; right: 28%; }
+.shape-11 { top: 36%; right: 12%; }
+.shape-12 { bottom: 14%; right: 14%; }
+.shape-13 { bottom: 10%; left: 26%; }
+.shape-14 { bottom: 12%; left: 11%; }
+.shape-15 { top: 3%;  right: 6%; }
+.shape-16 { top: 54%; right: 3%; }
+.shape-17 { bottom: 38%; left: 24%; }
+.shape-18 { bottom: 6%;  left: 1%; }
+
+/* ══════════════════════════════════════
+   MLH LOGO
+   ══════════════════════════════════════ */
+
+.hero-mlh-logo {
+  position: absolute;
+  top: 20px;
+  right: 32px;
+  z-index: 10;
+}
+
+.hero-mlh-logo img {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-mlh-logo img:hover {
+  transform: scale(1.12) rotate(-2deg);
+}
+
+/* ══════════════════════════════════════
+   CONTENT CONTAINER (centered)
+   ══════════════════════════════════════ */
+
+.hero-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* ══════════════════════════════════════
+   TYPOGRAPHY – HEADLINE + GLITCH
+   ══════════════════════════════════════ */
+
+.hero-top-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.hero-headline {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  line-height: 1;
+}
+
+.hero-headline-bot {
+  font-weight: 900;
+  font-size: clamp(3.8rem, 10vw, 7.5rem);
+  color: inherit;
+  letter-spacing: -0.03em;
+  /* 3D extrusion shadow */
+  text-shadow:
+    1px 1px 0 rgba(0,0,0,0.08),
+    2px 2px 0 rgba(0,0,0,0.06),
+    3px 3px 0 rgba(0,0,0,0.04),
+    4px 4px 0 rgba(0,0,0,0.02);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), text-shadow 0.35s ease;
+  cursor: default;
+}
+
+/* MLH-colored text */
+.hero-text-yellow {
+  color: #E73427;
+}
+
+.hero-text-blue {
+  color: #1D539F;
+  font-size: 0.85em;
+}
+
+.hero-headline-bot:hover {
+  transform: scale(1.04);
+  text-shadow:
+    1px 1px 0 rgba(0,0,0,0.12),
+    2px 2px 0 rgba(0,0,0,0.1),
+    3px 3px 0 rgba(0,0,0,0.08),
+    5px 5px 0 rgba(0,0,0,0.04);
+}
+
+.hero-headline-agent {
+  font-family: 'Pixelify Sans', monospace;
+  font-weight: 700;
+  font-size: clamp(3.8rem, 10vw, 7.5rem);
+  color: #F5C400;
+  letter-spacing: 0.02em;
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+  position: relative;
+  cursor: default;
+  /* Glitch + flicker animations */
+  animation: agent-glitch 6s step-end infinite, agent-flicker 8s ease-in-out infinite;
+  text-shadow:
+    3px 3px 0 rgba(245, 196, 0, 0.2),
+    -1px -1px 0 rgba(245, 196, 0, 0.05);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-headline-agent:hover {
+  transform: scale(1.04);
+  text-shadow:
+    4px 4px 0 rgba(245, 196, 0, 0.25),
+    -1px -1px 0 rgba(245, 196, 0, 0.08);
+}
+
+/* Pixel shimmer sweep */
+.hero-headline-agent::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 45%, rgba(255,255,255,0.45) 55%, transparent 60%);
+  background-size: 250% 100%;
+  animation: pixel-shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes pixel-shimmer {
+  0%, 100% { background-position: 250% 0; }
+  50%      { background-position: -50% 0; }
+}
+
+/* Occasional horizontal glitch jitter */
+@keyframes agent-glitch {
+  0%, 90%, 100% { transform: translateX(0); }
+  91%  { transform: translateX(-2px) skewX(-0.5deg); }
+  93%  { transform: translateX(2px) skewX(0.5deg); }
+  95%  { transform: translateX(-1px); }
+  97%  { transform: translateX(1px) skewX(-0.3deg); }
+}
+
+/* Subtle opacity flicker */
+@keyframes agent-flicker {
+  0%, 88%, 100% { opacity: 1; }
+  89% { opacity: 0.82; }
+  91% { opacity: 1; }
+  94% { opacity: 0.88; }
+  96% { opacity: 1; }
+}
+
+/* ══════════════════════════════════════
+   DATE PILL (tilted, playful)
+   ══════════════════════════════════════ */
+
+.hero-date-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 38px;
+  border-radius: 50px;
+  background: #FF9380;
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  margin-bottom: 20px;
+  cursor: default;
+  transform: rotate(-2deg);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.hero-date-pill:hover {
+  transform: rotate(0deg) scale(1.03);
+}
+
+/* ══════════════════════════════════════
+   SPRINT BADGE (3D floating sticker)
+   ══════════════════════════════════════ */
+
+.hero-sprint-badge {
+  position: absolute;
+  right: 8%;
+  bottom: 26%;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  padding: 24px 50px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #FF3B30 0%, #e0342a 100%);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  text-align: center;
+  line-height: 1.3;
+  box-shadow:
+    6px 8px 0 rgba(0,0,0,0.18),
+    0 20px 40px rgba(255, 59, 48, 0.15);
+  cursor: default;
+  white-space: nowrap;
+  transform-style: preserve-3d;
+  /* CSS float animation composes with framer 3D tilt */
+  animation: badge-float 5s ease-in-out infinite;
+}
+
+@keyframes badge-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+/* ══════════════════════════════════════
+   CTA BUTTON (with glow)
+   ══════════════════════════════════════ */
+
+.hero-cta-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 42px;
+  border-radius: 50px;
+  background: #000;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 rgba(245, 196, 0, 0.6);
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow: visible;
+}
+
+/* Glow aura */
+.hero-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 56px;
+  background: linear-gradient(135deg, rgba(255,59,48,0.35), rgba(245,196,0,0.35));
+  opacity: 0;
+  z-index: -1;
+  filter: blur(14px);
+  transition: opacity 0.4s ease;
+}
+
+.hero-cta-btn:hover::before {
+  opacity: 1;
+}
+
+.hero-cta-btn:hover {
+  background: #FF3B30;
+  border-color: #FF3B30;
+  box-shadow: 6px 8px 0 rgba(255, 59, 48, 0.25);
+}
+
+/* Arrow micro-animation */
+.cta-arrow {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hero-cta-btn:hover .cta-arrow {
+  transform: translateX(6px);
+}
+
+/* ══════════════════════════════════════
+   COUNTDOWN CARDS
+   ══════════════════════════════════════ */
+
+.hero-countdown {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px dashed rgba(0,0,0,0.08);
+}
+
+.countdown-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.countdown-card-inner {
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  padding: 18px 22px;
+  min-width: 88px;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.06),
+    0 1px 3px rgba(0,0,0,0.04);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.countdown-card:hover .countdown-card-inner {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+/* Subtle pulse ring */
+.countdown-card-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(245, 196, 0, 0.15);
+  animation: card-pulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes card-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(245, 196, 0, 0.1); }
+  50%      { box-shadow: inset 0 0 0 2px rgba(245, 196, 0, 0.25); }
+}
+
+.countdown-card-value {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: 2.5rem;
+  color: #000;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 2px 2px 0 rgba(245, 196, 0, 0.25);
+}
+
+.countdown-card-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+}
+
+/* ══════════════════════════════════════
+   LOCATION (bottom center)
+   ══════════════════════════════════════ */
+
+.hero-location {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: max-content;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #000;
+  white-space: nowrap;
+}
+
+.hero-location svg {
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .hero-hackathon {
+    padding: 60px 16px 40px;
+    min-height: auto;
+  }
+
+  .hero-grid-fine  { background-size: 28px 28px; }
+  .hero-grid-coarse { background-size: 80px 80px; }
+
+  .hero-mouse-glow { display: none; }
+
+  .hero-mlh-logo { top: 16px; right: 16px; }
+  .hero-mlh-logo img { height: 28px; }
+
+  .hero-top-label { font-size: 0.75rem; letter-spacing: 0.15em; margin-bottom: 8px; }
+
+  .hero-headline {
+    gap: 6px;
+    margin-bottom: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-headline-bot { font-size: clamp(1.8rem, 9vw, 2.5rem); }
+  .hero-headline-agent {
+    font-size: clamp(1.8rem, 9vw, 2.5rem);
+    /* Disable glitch on mobile for readability */
+    animation: none;
+  }
+
+  .hero-date-pill { padding: 6px 20px; font-size: 0.85rem; margin-bottom: 12px; }
+
+  .hero-sprint-badge {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin-top: 16px;
+    margin-bottom: 0px;
+    font-size: 0.9rem;
+    padding: 10px 22px;
+    animation: none;
+    order: 10;
+    z-index: 5;
+  }
+
+  .hero-cta-btn { padding: 10px 24px; font-size: 0.9rem; }
+
+  .hero-countdown {
+    gap: 6px;
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .countdown-card-inner {
+    padding: 10px 12px;
+    min-width: 62px;
+    border-radius: 12px;
+  }
+
+  .countdown-card-value { font-size: 1.6rem; }
+
+  .hero-location {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 16px;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+  }
+
+  /* Reduce and fade shapes on mobile to not obscure text */
+  .shape-2, .shape-3, .shape-6, .shape-7, .shape-8, .shape-10, .shape-11, .shape-12, .shape-13,
+  .shape-14, .shape-15, .shape-16, .shape-17, .shape-18 {
+    display: none;
+  }
+
+  .shape-1  { top: 2%; left: 0%; transform: scale(0.5); opacity: 0.4 !important; }
+  .shape-4  { top: 4%; right: 10%; transform: scale(0.5); opacity: 0.6 !important; }
+  .shape-5  { top: 38%; left: -5%; transform: scale(0.6); opacity: 0.5 !important; }
+  .shape-9  { bottom: 5%; right: 0%; transform: scale(0.5); opacity: 0.6 !important; }
+
+  /* Disable heavy float animations on mobile */
+  .shape-float-a,
+  .shape-float-b,
+  .shape-float-c {
+    animation-duration: 12s; /* slower = less CPU */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-headline-bot { font-size: clamp(1.6rem, 8vw, 2.2rem); }
+  .hero-headline-agent { font-size: clamp(1.6rem, 8vw, 2.2rem); }
+  .countdown-card-value { font-size: 1.4rem; }
+  .countdown-card-inner { min-width: 52px; padding: 8px 8px; }
+  .hero-countdown { gap: 4px; }
+  .hero-date-pill { padding: 6px 18px; font-size: 0.75rem; }
+  .hero-sprint-badge { padding: 8px 18px; font-size: 0.8rem; }
+  .hero-location { font-size: 0.55rem; }
+}
+
+/* ═══════════════════
+   REDUCED MOTION
+   ═══════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .shape-float-a,
+  .shape-float-b,
+  .shape-float-c,
+  .hero-headline-agent,
+  .countdown-card-inner::after {
+    animation: none !important;
+  }
+  .hero-mouse-glow { display: none; }
+}
