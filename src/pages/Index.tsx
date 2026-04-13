@@ -548,7 +548,7 @@ const Index = () => {
               {
                 name: 'Souvik',
                 role: 'Co-Organizer',
-                desc: 'Focuses on design, branding, and producing creative assets.',
+                desc: 'I’m Souvik Ghosh, a final-year BCA student, organizer of Hackolution and Campus Tank, and a Techno Wiz awardee from IEM Kolkata.',
                 image: '/souvik.png',
                 linkedin: 'https://www.linkedin.com/in/souvik-ghosh-1bb26a282/',
                 website: 'https://www.devsouvik.in/',
@@ -558,7 +558,7 @@ const Index = () => {
               {
                 name: 'Soumodip',
                 role: 'Co-Organizer',
-                desc: 'Manages sponsorships, partnerships, and external relations.',
+                desc: 'I am Soumodip Das, a final year BCA student at IEM Kolkata. Just a regular guy who loves music, enjoys tech stuff, and watches anime.',
                 image: '/soumodip.png',
                 linkedin: 'https://www.linkedin.com/in/itssoumodip/',
                 website: 'https://www.soumodip.in/',
