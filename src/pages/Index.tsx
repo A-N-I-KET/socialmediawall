@@ -568,7 +568,7 @@ const Index = () => {
               {
                 name: 'Anirban',
                 role: 'Co-Organizer',
-                desc: 'Oversees scheduling, volunteer coordination, and day-of execution.',
+                desc: 'Tech enthusiast and developer passionate about building smart solutions with AI and Flutter.',
                 image: '/anirban.png',
                 linkedin: 'https://www.linkedin.com/in/anirban-das-croundous/',
                 website: 'https://www.anirbandasdev.in/',
