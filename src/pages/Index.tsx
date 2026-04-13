@@ -529,9 +529,9 @@ const Index = () => {
                 name: 'Rohan',
                 role: 'Co-Organizer',
                 desc: 'Handles logistics, operations, and technical infrastructure for the event.',
-                seed: 'Rohan',
-                linkedin: '#',
-                website: '#',
+                image: '/rohan.png',
+                linkedin: 'https://www.linkedin.com/in/rohan-sinha-0b926225a/',
+                website: '',
                 accent: '#1D539F',
                 featured: false,
               },
@@ -539,9 +539,9 @@ const Index = () => {
                 name: 'Saikat',
                 role: 'Co-Organizer',
                 desc: 'Engages with participants, handles outreach, and manages the community.',
-                seed: 'Saikat',
-                linkedin: '#',
-                website: '#',
+                image: '/saikat.png',
+                linkedin: 'https://www.linkedin.com/in/heyysaikat/',
+                website: 'https://heyysaikat.in/',
                 accent: '#FF6B6B',
                 featured: false,
               },
@@ -549,9 +549,9 @@ const Index = () => {
                 name: 'Souvik',
                 role: 'Co-Organizer',
                 desc: 'Focuses on design, branding, and producing creative assets.',
-                seed: 'Souvik',
-                linkedin: '#',
-                website: '#',
+                image: '/souvik.png',
+                linkedin: 'https://www.linkedin.com/in/souvik-ghosh-1bb26a282/',
+                website: 'https://www.devsouvik.in/',
                 accent: '#8B5CF6',
                 featured: false,
               },
@@ -559,9 +559,9 @@ const Index = () => {
                 name: 'Soumodip',
                 role: 'Co-Organizer',
                 desc: 'Manages sponsorships, partnerships, and external relations.',
-                seed: 'Soumodip',
-                linkedin: '#',
-                website: '#',
+                image: '/soumodip.png',
+                linkedin: 'https://www.linkedin.com/in/itssoumodip/',
+                website: 'https://www.soumodip.in/',
                 accent: '#A3E635',
                 featured: false,
               },
@@ -569,9 +569,9 @@ const Index = () => {
                 name: 'Anirban',
                 role: 'Co-Organizer',
                 desc: 'Oversees scheduling, volunteer coordination, and day-of execution.',
-                seed: 'Anirban',
-                linkedin: '#',
-                website: '#',
+                image: '/anirban.png',
+                linkedin: 'https://www.linkedin.com/in/anirban-das-croundous/',
+                website: 'https://www.anirbandasdev.in/',
                 accent: '#FB923C',
                 featured: false,
               }
@@ -601,9 +601,9 @@ const Index = () => {
                     }}
                   >
                     <img 
-                      src={item.image ? item.image : `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.seed}&backgroundColor=transparent`} 
+                      src={item.image} 
                       alt={item.name} 
-                      style={{ width: '90%', height: '90%', objectFit: 'cover' }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)' }}
                     />
                   </div>
                   <div>
