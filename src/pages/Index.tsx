@@ -443,6 +443,200 @@ const Index = () => {
           </div>
         </section>
 
+        {/* ═══════════════════════════════════════
+           SCHEDULE SECTION
+           ═══════════════════════════════════════ */}
+        <section className="hack-section" id="schedule-section">
+          <div className="hack-section-grid" aria-hidden="true" />
+          
+          <motion.div
+            className="hack-section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 100, damping: 18 }}
+          >
+            <span className="hack-section-tag">⏱️ Timeline</span>
+            <h2 className="hack-section-title">Schedule</h2>
+            <p className="hack-section-subtitle">Plan your hackathon day from start to finish</p>
+          </motion.div>
+
+          <div className="hack-cards-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+            {[
+              { time: '9:00 AM', title: 'Check In & Opening Ceremony', desc: 'Welcome! Get your swags and settle in.', accent: '#1D539F' },
+              { time: '9:30 AM', title: 'Hacking Starts', desc: 'Start building your projects.', accent: '#F5C400' },
+              { time: '11:30 AM', title: 'Workshop', desc: 'Learn new skills from experts.', accent: '#FF6B6B' },
+              { time: '1:00 PM', title: 'Lunch Time', desc: 'Refuel with some amazing food.', accent: '#A3E635' },
+              { time: '2:30 PM', title: 'Hacking & Submission Ends', desc: 'Wrap up and submit your projects.', accent: '#FF3B30' },
+              { time: '2:30 PM - 3:00 PM', title: 'Judging', desc: 'Present your demos to the judges.', accent: '#8B5CF6' },
+              { time: '3:00 PM - 4:00 PM', title: 'Closing Ceremony', desc: 'Winner announcements and final goodbye.', accent: '#FB923C' }
+            ].map((evt, idx) => (
+              <motion.div
+                key={evt.title + idx}
+                className="hack-card"
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.1 + idx * 0.08 }}
+                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.08)', borderColor: evt.accent }}
+                style={{ borderTop: `4px solid ${evt.accent}` }}
+              >
+                <div style={{ fontFamily: "'Poppins', sans-serif", fontSize: '1.5rem', fontWeight: 900, color: evt.accent, marginBottom: '8px' }}>
+                  {evt.time}
+                </div>
+                <h3 className="hack-card-title">{evt.title}</h3>
+                <p className="hack-card-desc" style={{ margin: 0 }}>{evt.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="hack-section-shapes" aria-hidden="true">
+            <svg className="hack-deco hack-deco-2" width="60" height="60" viewBox="0 0 60 60"><polygon points="30,5 55,50 5,50" fill="none" stroke="#1D539F" strokeWidth="4" opacity="0.15" /></svg>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════
+           ORGANIZERS SECTION
+           ═══════════════════════════════════════ */}
+        <section className="hack-section" id="organizers-section">
+          <div className="hack-section-grid" aria-hidden="true" />
+          
+          <motion.div
+            className="hack-section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 100, damping: 18 }}
+          >
+            <span className="hack-section-tag">👋 Meet the Team</span>
+            <h2 className="hack-section-title">Organizers</h2>
+            <p className="hack-section-subtitle">The people working behind the scenes to make this event possible</p>
+          </motion.div>
+
+          <div className="hack-cards-grid">
+            {[
+              {
+                name: 'Aniket',
+                role: 'Lead Organizer',
+                desc: 'AI ENGINEER , Founder @pujoplanner , Hackathon winner 5x , MLH hackathon winner 3x',
+                image: '/aniket.jpeg',
+                linkedin: 'https://www.linkedin.com/in/aniketchakrabortydev/',
+                website: 'https://www.aniketchakrabortydev.in/',
+                accent: '#F5C400',
+                featured: true,
+              },
+              {
+                name: 'Rohan',
+                role: 'Co-Organizer',
+                desc: 'Handles logistics, operations, and technical infrastructure for the event.',
+                seed: 'Rohan',
+                linkedin: '#',
+                website: '#',
+                accent: '#1D539F',
+                featured: false,
+              },
+              {
+                name: 'Saikat',
+                role: 'Co-Organizer',
+                desc: 'Engages with participants, handles outreach, and manages the community.',
+                seed: 'Saikat',
+                linkedin: '#',
+                website: '#',
+                accent: '#FF6B6B',
+                featured: false,
+              },
+              {
+                name: 'Souvik',
+                role: 'Co-Organizer',
+                desc: 'Focuses on design, branding, and producing creative assets.',
+                seed: 'Souvik',
+                linkedin: '#',
+                website: '#',
+                accent: '#8B5CF6',
+                featured: false,
+              },
+              {
+                name: 'Soumodip',
+                role: 'Co-Organizer',
+                desc: 'Manages sponsorships, partnerships, and external relations.',
+                seed: 'Soumodip',
+                linkedin: '#',
+                website: '#',
+                accent: '#A3E635',
+                featured: false,
+              },
+              {
+                name: 'Anirban',
+                role: 'Co-Organizer',
+                desc: 'Oversees scheduling, volunteer coordination, and day-of execution.',
+                seed: 'Anirban',
+                linkedin: '#',
+                website: '#',
+                accent: '#FB923C',
+                featured: false,
+              }
+            ].map((item, idx) => (
+              <motion.div
+                key={item.name + idx}
+                className={`hack-card ${item.featured ? 'hack-card-featured' : ''}`}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.1 + idx * 0.12 }}
+                whileHover={{ y: -8, boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '18px', gap: '16px' }}>
+                  <div 
+                    style={{ 
+                      width: '80px', 
+                      height: '80px', 
+                      borderRadius: '50%', 
+                      background: `rgba(${item.accent === '#F5C400' ? '245, 196, 0' : item.accent === '#1D539F' ? '29, 83, 159' : '255, 107, 107'}, 0.15)`,
+                      border: `2px solid ${item.accent}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      flexShrink: 0
+                    }}
+                  >
+                    <img 
+                      src={item.image ? item.image : `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.seed}&backgroundColor=transparent`} 
+                      alt={item.name} 
+                      style={{ width: '90%', height: '90%', objectFit: 'cover' }}
+                    />
+                  </div>
+                  <div>
+                    {item.featured && <div className="hack-card-badge" style={{ marginBottom: '6px' }}>Lead</div>}
+                    <h3 className="hack-card-title" style={{ margin: 0, fontSize: '1.3rem' }}>{item.name}</h3>
+                    <span style={{ fontFamily: "'Poppins', sans-serif", fontSize: '0.85rem', color: item.accent, fontWeight: 700 }}>{item.role}</span>
+                  </div>
+                </div>
+                <p className="hack-card-desc">{item.desc}</p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
+                  {item.linkedin && (
+                    <a href={item.linkedin} target="_blank" rel="noopener noreferrer" className="hack-pill hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center gap-1.5" style={{ textDecoration: 'none', background: 'rgba(10, 102, 194, 0.1)', color: '#0A66C2', border: '1px solid rgba(10, 102, 194, 0.2)' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                      LinkedIn
+                    </a>
+                  )}
+                  {item.website && (
+                    <a href={item.website} target="_blank" rel="noopener noreferrer" className="hack-pill hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center gap-1.5" style={{ textDecoration: 'none', background: 'rgba(0, 0, 0, 0.06)', color: '#333', border: '1px solid rgba(0, 0, 0, 0.1)' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                      Website
+                    </a>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="hack-section-shapes" aria-hidden="true">
+            <svg className="hack-deco hack-deco-1" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="#FF6B6B" strokeWidth="4" opacity="0.15" /></svg>
+            <svg className="hack-deco hack-deco-3" width="60" height="60" viewBox="0 0 60 60"><rect x="15" y="15" width="30" height="30" fill="#8B5CF6" opacity="0.1" transform="rotate(45 30 30)" /></svg>
+          </div>
+        </section>
+
         <div id="social-wall-section" className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32 pt-16 contain-paint">
           <LiveFeedHeader />
           <div className="min-h-[40vh]">
