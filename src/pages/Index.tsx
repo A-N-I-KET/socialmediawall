@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'fra
 import MasonryGrid from '@/components/MasonryGrid';
 import HeroHackathon from '@/components/HeroHackathon';
 import { FloatingNav } from '../components/FloatingNav';
+import ProjectsSection from '@/components/public/ProjectsSection';
 
 // --- Types ---
 interface Tweet {
@@ -568,7 +569,7 @@ const Index = () => {
               {
                 name: 'Anirban',
                 role: 'Co-Organizer',
-                desc: 'Tech enthusiast and developer passionate about building smart solutions with AI and Flutter.',
+                desc: 'Tech enthusiast and Flutter developer building smart solutions, Co-Founder @pujoplanner, 5× Hackathon Winner, 3× MLH Winner',
                 image: '/anirban.png',
                 linkedin: 'https://www.linkedin.com/in/anirban-das-croundous/',
                 website: 'https://www.anirbandasdev.in/',
@@ -636,6 +637,11 @@ const Index = () => {
             <svg className="hack-deco hack-deco-3" width="60" height="60" viewBox="0 0 60 60"><rect x="15" y="15" width="30" height="30" fill="#8B5CF6" opacity="0.1" transform="rotate(45 30 30)" /></svg>
           </div>
         </section>
+
+        {/* ═══════════════════════════════════════
+           PROJECTS SECTION (Dynamic from Firestore)
+           ═══════════════════════════════════════ */}
+        <ProjectsSection />
 
         <div id="social-wall-section" className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32 pt-16 contain-paint">
           <LiveFeedHeader />
