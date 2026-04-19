@@ -383,7 +383,7 @@ const Index = () => {
                 ),
                 title: 'Free Food',
                 desc: 'Stay fuelled throughout the hackathon with complimentary Lunch for all participants.',
-                pills: ['🍕 Free Lunch', '☕ Unlimited Coffee'],
+                pills: ['🍕 Free Lunch'],
                 accent: '#E73427',
               },
               {
