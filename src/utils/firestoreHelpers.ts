@@ -38,6 +38,7 @@ export interface Project {
   projectImages: string[];
   submittedAt: Timestamp;
   winner: string; // "" | "1st" | "1st_runner_up" | "2nd_runner_up"
+  reviewed: boolean;
 }
 
 export interface SubmissionSettings {
@@ -102,6 +103,11 @@ export async function setParticipantPassword(
   await updateDoc(docRef, { passwordSet: true, hashedPassword, firstName, lastName });
 }
 
+export async function resetParticipantPassword(email: string): Promise<void> {
+  const docRef = doc(db, 'participants', email.toLowerCase());
+  await updateDoc(docRef, { passwordSet: false, hashedPassword: '' });
+}
+
 export async function deleteParticipant(email: string): Promise<void> {
   await deleteDoc(doc(db, 'participants', email.toLowerCase()));
 }
@@ -116,7 +122,7 @@ export async function clearAllParticipants(): Promise<void> {
    PROJECTS
    ═══════════════════════════════════════ */
 
-export async function submitProject(email: string, projectData: Omit<Project, 'participantEmail' | 'participantName' | 'submittedAt' | 'winner'>): Promise<void> {
+export async function submitProject(email: string, projectData: Omit<Project, 'participantEmail' | 'participantName' | 'submittedAt' | 'winner' | 'reviewed'>): Promise<void> {
   // Fetch participant name
   const participant = await getParticipantByEmail(email);
   const participantName = participant
@@ -124,12 +130,26 @@ export async function submitProject(email: string, projectData: Omit<Project, 'p
     : email;
 
   const docRef = doc(db, 'projects', email.toLowerCase());
+
+  // Check if a project already exists (edit case) — preserve winner & reviewed
+  const existingDoc = await getDoc(docRef);
+  let existingWinner = '';
+  let existingReviewed = false;
+  if (existingDoc.exists()) {
+    const data = existingDoc.data();
+    existingWinner = data.winner || '';
+    existingReviewed = data.reviewed || false;
+    // Delete old doc so Firestore sees next setDoc as a "create" (matches our security rules)
+    await deleteDoc(docRef);
+  }
+
   await setDoc(docRef, {
     ...projectData,
     participantEmail: email.toLowerCase(),
     participantName,
     submittedAt: Timestamp.now(),
-    winner: '',
+    winner: existingWinner,
+    reviewed: existingReviewed,
   });
 
   // Mark participant as having submitted

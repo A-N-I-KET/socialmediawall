@@ -5,6 +5,7 @@ import {
   deleteParticipant,
   clearAllParticipants,
   deleteProject,
+  resetParticipantPassword,
   type Participant,
 } from '@/utils/firestoreHelpers';
 import { toast } from '@/hooks/use-toast';
@@ -72,6 +73,17 @@ const ParticipantsManager = () => {
     }
   };
 
+  const handleResetPassword = async (email: string) => {
+    if (!confirm(`Reset password for ${email}? They will need to set a new password on next login.`)) return;
+    try {
+      await resetParticipantPassword(email);
+      toast({ title: 'Password Reset', description: `${email} will be prompted to set a new password.` });
+      await fetchParticipants();
+    } catch {
+      toast({ title: 'Error', description: 'Failed to reset password.', variant: 'destructive' });
+    }
+  };
+
   const handleClearAll = async () => {
     if (!confirm('Are you sure you want to delete ALL participants and their projects? This cannot be undone.')) return;
     setClearing(true);
@@ -89,9 +101,23 @@ const ParticipantsManager = () => {
   return (
     <div className="space-y-6">
       {/* Bulk Import */}
-      <div className="glass-panel p-6 md:p-8" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
-        <h3 className="text-lg font-semibold text-white mb-4 tracking-tight">Bulk Import Participants</h3>
-        <p className="text-xs text-gray-400 mb-3">Paste emails below, one per line or comma-separated.</p>
+      <div
+        className="rounded-2xl p-6 md:p-8"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+        }}
+      >
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/20">
+            <span className="text-lg">📧</span>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-white tracking-tight">Import Participants</h3>
+            <p className="text-xs text-gray-500">Paste emails below, one per line or comma-separated</p>
+          </div>
+        </div>
         <textarea
           value={emailsInput}
           onChange={(e) => setEmailsInput(e.target.value)}
@@ -108,7 +134,14 @@ const ParticipantsManager = () => {
       </div>
 
       {/* Participants Table */}
-      <div className="glass-panel p-6 md:p-8" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+      <div
+        className="rounded-2xl p-6 md:p-8"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+        }}
+      >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white tracking-tight">
             All Participants ({participants.length})
@@ -154,12 +187,22 @@ const ParticipantsManager = () => {
                       <span className={`inline-block w-2 h-2 rounded-full ${p.projectSubmitted ? 'bg-green-400' : 'bg-gray-600'}`} />
                     </td>
                     <td className="py-3 px-2 text-right">
-                      <button
-                        onClick={() => handleDelete(p.email)}
-                        className="text-xs text-red-400 hover:text-red-300 transition-colors"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        {p.passwordSet && (
+                          <button
+                            onClick={() => handleResetPassword(p.email)}
+                            className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors"
+                          >
+                            Reset Pwd
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(p.email)}
+                          className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

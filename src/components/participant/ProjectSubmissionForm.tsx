@@ -2,23 +2,31 @@ import { useState, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { uploadMultipleToCloudinary } from '@/utils/cloudinaryUpload';
 import { submitProject } from '@/utils/firestoreHelpers';
+import type { Project } from '@/utils/firestoreHelpers';
 import { toast } from '@/hooks/use-toast';
 
 interface ProjectSubmissionFormProps {
   participantEmail: string;
   onSubmitted: () => void;
+  existingProject?: Project | null;
 }
 
-const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmissionFormProps) => {
-  const [projectName, setProjectName] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [projectLinks, setProjectLinks] = useState<string[]>(['']);
-  const [problemItSolves, setProblemItSolves] = useState('');
-  const [challengesRanInto, setChallengesRanInto] = useState('');
+const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject }: ProjectSubmissionFormProps) => {
+  const isEdit = !!existingProject;
+
+  const [projectName, setProjectName] = useState(existingProject?.projectName || '');
+  const [shortDescription, setShortDescription] = useState(existingProject?.shortDescription || '');
+  const [projectLinks, setProjectLinks] = useState<string[]>(
+    existingProject?.projectLinks?.length ? existingProject.projectLinks : ['']
+  );
+  const [problemItSolves, setProblemItSolves] = useState(existingProject?.problemItSolves || '');
+  const [challengesRanInto, setChallengesRanInto] = useState(existingProject?.challengesRanInto || '');
   const [techInput, setTechInput] = useState('');
-  const [technologiesUsed, setTechnologiesUsed] = useState<string[]>([]);
+  const [technologiesUsed, setTechnologiesUsed] = useState<string[]>(existingProject?.technologiesUsed || []);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  // Existing Cloudinary URLs from previous submission
+  const [existingImages, setExistingImages] = useState<string[]>(existingProject?.projectImages || []);
   const [submitting, setSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ completed: number; total: number } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -49,20 +57,42 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
   };
 
   // --- Images ---
+  const MAX_IMAGES = 4;
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+  const totalImageCount = existingImages.length + imageFiles.length;
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    const validFiles = files.filter((f) => validTypes.includes(f.type));
 
-    if (validFiles.length !== files.length) {
+    // Filter by type
+    const typeValid = files.filter((f) => validTypes.includes(f.type));
+    if (typeValid.length !== files.length) {
       toast({ title: 'Invalid file type', description: 'Only JPG, PNG, GIF, and WebP images are allowed.', variant: 'destructive' });
     }
 
-    const newFiles = [...imageFiles, ...validFiles];
-    setImageFiles(newFiles);
+    // Filter by size
+    const sizeValid = typeValid.filter((f) => f.size <= MAX_FILE_SIZE);
+    if (sizeValid.length !== typeValid.length) {
+      toast({ title: 'File too large', description: 'Each image must be under 10MB.', variant: 'destructive' });
+    }
+
+    // Check total count
+    const remaining = MAX_IMAGES - existingImages.length - imageFiles.length;
+    if (remaining <= 0) {
+      toast({ title: 'Limit reached', description: `You can only upload up to ${MAX_IMAGES} images.`, variant: 'destructive' });
+      return;
+    }
+    const allowed = sizeValid.slice(0, remaining);
+    if (sizeValid.length > remaining) {
+      toast({ title: 'Some images skipped', description: `Only ${remaining} more image(s) allowed. Extra images were skipped.`, variant: 'destructive' });
+    }
+
+    setImageFiles((prev) => [...prev, ...allowed]);
 
     // Generate previews
-    validFiles.forEach((file) => {
+    allowed.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (ev) => {
         setImagePreviews((prev) => [...prev, ev.target?.result as string]);
@@ -74,6 +104,10 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
   const removeImage = (idx: number) => {
     setImageFiles(imageFiles.filter((_, i) => i !== idx));
     setImagePreviews(imagePreviews.filter((_, i) => i !== idx));
+  };
+
+  const removeExistingImage = (idx: number) => {
+    setExistingImages(existingImages.filter((_, i) => i !== idx));
   };
 
   // --- Submit ---
@@ -91,16 +125,19 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
 
     setSubmitting(true);
     try {
-      // Upload images to Cloudinary
-      let imageUrls: string[] = [];
+      // Upload NEW images to Cloudinary
+      let newImageUrls: string[] = [];
       if (imageFiles.length > 0) {
         setUploadProgress({ completed: 0, total: imageFiles.length });
-        imageUrls = await uploadMultipleToCloudinary(imageFiles, (completed, total) => {
+        newImageUrls = await uploadMultipleToCloudinary(imageFiles, (completed, total) => {
           setUploadProgress({ completed, total });
         });
       }
 
-      // Submit to Firestore
+      // Merge existing images (kept) with newly uploaded ones
+      const allImageUrls = [...existingImages, ...newImageUrls];
+
+      // Submit to Firestore (setDoc overwrites, so works for both create and update)
       await submitProject(participantEmail, {
         projectName: projectName.trim(),
         shortDescription: shortDescription.trim(),
@@ -108,10 +145,10 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
         problemItSolves,
         challengesRanInto,
         technologiesUsed,
-        projectImages: imageUrls,
+        projectImages: allImageUrls,
       });
 
-      toast({ title: 'Success! 🎉', description: 'Your project has been submitted.' });
+      toast({ title: isEdit ? 'Updated! ✅' : 'Success! 🎉', description: isEdit ? 'Your project has been updated.' : 'Your project has been submitted.' });
       onSubmitted();
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Submission failed';
@@ -131,7 +168,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
           type="text"
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] transition-colors text-sm"
+          className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm"
           placeholder="e.g., AI-Powered Study Assistant"
           required
         />
@@ -146,7 +183,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
           type="text"
           value={shortDescription}
           onChange={(e) => setShortDescription(e.target.value.slice(0, 200))}
-          className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] transition-colors text-sm"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm"
           placeholder="A brief one-liner about your project"
           required
           maxLength={200}
@@ -163,7 +200,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
                 type="url"
                 value={link}
                 onChange={(e) => updateLink(idx, e.target.value)}
-                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] transition-colors text-sm"
+                className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm"
                 placeholder="https://github.com/your-project"
               />
               {projectLinks.length > 1 && (
@@ -197,10 +234,10 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
           <textarea
             value={problemItSolves}
             onChange={(e) => setProblemItSolves(e.target.value)}
-            className="w-full h-40 px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] transition-colors text-sm font-mono resize-none"
+            className="w-full min-h-[200px] px-4 py-3 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm font-mono resize-y"
             placeholder="Write in markdown..."
           />
-          <div className="h-40 overflow-y-auto px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 text-sm prose prose-sm max-w-none">
+          <div className="min-h-[200px] max-h-[400px] overflow-y-auto px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 text-sm prose prose-sm max-w-none">
             {problemItSolves ? (
               <ReactMarkdown>{problemItSolves}</ReactMarkdown>
             ) : (
@@ -220,10 +257,10 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
           <textarea
             value={challengesRanInto}
             onChange={(e) => setChallengesRanInto(e.target.value)}
-            className="w-full h-40 px-4 py-3 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] transition-colors text-sm font-mono resize-none"
+            className="w-full min-h-[200px] px-4 py-3 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm font-mono resize-y"
             placeholder="Write in markdown..."
           />
-          <div className="h-40 overflow-y-auto px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 text-sm prose prose-sm max-w-none">
+          <div className="min-h-[200px] max-h-[400px] overflow-y-auto px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 text-sm prose prose-sm max-w-none">
             {challengesRanInto ? (
               <ReactMarkdown>{challengesRanInto}</ReactMarkdown>
             ) : (
@@ -242,7 +279,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
             value={techInput}
             onChange={(e) => setTechInput(e.target.value)}
             onKeyDown={handleTechKeyDown}
-            className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] transition-colors text-sm"
+            className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm"
             placeholder="Type a technology and press Enter"
           />
           <button
@@ -277,8 +314,9 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
 
       {/* Project Images */}
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-2">Project Images</label>
-        <p className="text-xs text-gray-400 mb-2">Upload screenshots or images of your project (JPG, PNG, GIF, WebP).</p>
+        <label className="block text-sm font-semibold text-gray-800 mb-1">Project Images</label>
+        <p className="text-xs text-gray-400 mb-1">Upload screenshots or images of your project (JPG, PNG, GIF, WebP).</p>
+        <p className="text-xs text-amber-600 font-medium mb-3">⚠️ Max 4 images · Max 10MB per image</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -290,7 +328,12 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="w-full px-4 py-8 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-[#F5C400] hover:text-gray-700 transition-colors text-sm cursor-pointer"
+          disabled={totalImageCount >= MAX_IMAGES}
+          className={`w-full px-4 py-8 rounded-xl border-2 border-dashed text-sm cursor-pointer transition-colors ${
+            totalImageCount >= MAX_IMAGES
+              ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50'
+              : 'border-gray-300 text-gray-500 hover:border-[#F5C400] hover:text-gray-700'
+          }`}
         >
           <div className="flex flex-col items-center gap-2">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -298,28 +341,60 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21 15 16 10 5 21" />
             </svg>
-            Click to upload images
+            {totalImageCount >= MAX_IMAGES
+              ? 'Maximum 4 images reached'
+              : `Click to upload images (${totalImageCount}/${MAX_IMAGES})`
+            }
           </div>
         </button>
 
+        {/* Existing images (from previous submission) */}
+        {existingImages.length > 0 && (
+          <div className="mt-3">
+            <p className="text-xs text-gray-500 mb-2">Existing images (click ✕ to remove):</p>
+            <div className="flex flex-wrap gap-3">
+              {existingImages.map((url, idx) => (
+                <div key={`existing-${idx}`} className="relative group">
+                  <img
+                    src={url}
+                    alt={`Existing ${idx + 1}`}
+                    className="w-24 h-24 rounded-xl object-cover border-2 border-gray-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeExistingImage(idx)}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Newly selected images */}
         {imagePreviews.length > 0 && (
-          <div className="flex flex-wrap gap-3 mt-3">
-            {imagePreviews.map((preview, idx) => (
-              <div key={idx} className="relative group">
-                <img
-                  src={preview}
-                  alt={`Preview ${idx + 1}`}
-                  className="w-24 h-24 rounded-xl object-cover border-2 border-gray-200"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeImage(idx)}
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
+          <div className="mt-3">
+            {existingImages.length > 0 && <p className="text-xs text-gray-500 mb-2">New images to upload:</p>}
+            <div className="flex flex-wrap gap-3">
+              {imagePreviews.map((preview, idx) => (
+                <div key={`new-${idx}`} className="relative group">
+                  <img
+                    src={preview}
+                    alt={`Preview ${idx + 1}`}
+                    className="w-24 h-24 rounded-xl object-cover border-2 border-blue-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(idx)}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -344,14 +419,21 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted }: ProjectSubmiss
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-4 rounded-xl font-bold text-sm transition-all duration-300"
+          className="w-full py-4 rounded-xl font-bold text-sm transition-all duration-300 active:scale-[0.98]"
           style={{
-            background: submitting ? '#666' : '#000',
+            background: submitting ? '#999' : '#000',
             color: '#fff',
-            boxShadow: submitting ? 'none' : '4px 4px 0 rgba(245, 196, 0, 0.5)',
+            boxShadow: submitting ? 'none' : '0 4px 14px rgba(0, 0, 0, 0.15), 4px 4px 0 rgba(245, 196, 0, 0.5)',
           }}
         >
-          {submitting ? 'Submitting your project…' : 'Submit Project 🚀'}
+          {submitting ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              {isEdit ? 'Updating your project…' : 'Submitting your project…'}
+            </span>
+          ) : (
+            isEdit ? 'Update Project ✏️' : 'Submit Project 🚀'
+          )}
         </button>
       </div>
     </form>
