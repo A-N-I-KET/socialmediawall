@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Trophy, Gift, MessageSquare, Rocket } from 'lucide-react';
+import { Sparkles, Trophy, Gift, MessageSquare, Rocket, Scale } from 'lucide-react';
 
 const navItems = [
   { id: 'hero-section', icon: Sparkles, label: 'Home' },
   { id: 'prizes-section', icon: Trophy, label: 'Prizes' },
   { id: 'offerings-section', icon: Gift, label: 'Offerings' },
+  { id: 'judges-section', icon: Scale, label: 'Judges' },
   { id: 'projects-section', icon: Rocket, label: 'Projects' },
   { id: 'social-wall-section', icon: MessageSquare, label: 'Live Feed' },
 ];

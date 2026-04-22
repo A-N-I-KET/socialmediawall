@@ -639,6 +639,103 @@ const Index = () => {
         </section>
 
         {/* ═══════════════════════════════════════
+           JUDGES SECTION
+           ═══════════════════════════════════════ */}
+        <section className="hack-section" id="judges-section">
+          <div className="hack-section-grid" aria-hidden="true" />
+          
+          <motion.div
+            className="hack-section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ type: 'spring', stiffness: 100, damping: 18 }}
+          >
+            <span className="hack-section-tag">⚖️ The Panel</span>
+            <h2 className="hack-section-title">Judges</h2>
+            <p className="hack-section-subtitle">Meet the experts who will evaluate your innovations</p>
+          </motion.div>
+
+          <div className="hack-cards-grid">
+            {[
+              {
+                name: 'Souradip Pal',
+                role: 'Judge',
+                desc: 'AI Engineer focused on building agentic AI systems and real-world automation solutions & 5× hackathon winner.',
+                image: '/subra.png',
+                linkedin: 'https://www.linkedin.com/in/souradip-pal-codes/',
+                accent: '#8B5CF6',
+              },
+              {
+                name: 'Avik Agarwala',
+                role: 'Judge',
+                desc: 'A recognized pioneer in the field of artificial thought. He insights guide our technical evaluations with precise logic.',
+                image: '/avik.png',
+                linkedin: 'https://www.linkedin.com/in/avikagarwala/',
+                accent: '#1D539F',
+              },
+              {
+                name: 'Aniket Chakraborty',
+                role: 'Judge',
+                desc: 'AI Engineer, Founder @pujoplanner, 5× Hackathon Winner, 3× MLH Hackathon Winner.',
+                image: '/aniket.jpeg',
+                linkedin: 'https://www.linkedin.com/in/aniketchakrabortydev/',
+                accent: '#F5C400',
+              },
+            ].map((item, idx) => (
+              <motion.div
+                key={item.name + idx}
+                className="hack-card"
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.1 + idx * 0.12 }}
+                whileHover={{ y: -8, boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '18px', gap: '16px' }}>
+                  <div 
+                    style={{ 
+                      width: '80px', 
+                      height: '80px', 
+                      borderRadius: '50%', 
+                      background: `rgba(${item.accent === '#8B5CF6' ? '139, 92, 246' : item.accent === '#1D539F' ? '29, 83, 159' : '245, 196, 0'}, 0.15)`,
+                      border: `2px solid ${item.accent}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      flexShrink: 0
+                    }}
+                  >
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.15)' }}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="hack-card-title" style={{ margin: 0, fontSize: '1.3rem' }}>{item.name}</h3>
+                    <span style={{ fontFamily: "'Poppins', sans-serif", fontSize: '0.85rem', color: item.accent, fontWeight: 700 }}>{item.role}</span>
+                  </div>
+                </div>
+                <p className="hack-card-desc">{item.desc}</p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '16px' }}>
+                  <a href={item.linkedin} target="_blank" rel="noopener noreferrer" className="hack-pill hover:opacity-80 transition-opacity cursor-pointer flex items-center justify-center gap-1.5" style={{ textDecoration: 'none', background: 'rgba(10, 102, 194, 0.1)', color: '#0A66C2', border: '1px solid rgba(10, 102, 194, 0.2)' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    LinkedIn
+                  </a>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="hack-section-shapes" aria-hidden="true">
+            <svg className="hack-deco hack-deco-2" width="50" height="50" viewBox="0 0 50 50"><polygon points="25,2 48,40 2,40" fill="none" stroke="#8B5CF6" strokeWidth="3" opacity="0.15" /></svg>
+            <svg className="hack-deco hack-deco-4" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#F5C400" strokeWidth="3" opacity="0.12" /></svg>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════
            PROJECTS SECTION (Dynamic from Firestore)
            ═══════════════════════════════════════ */}
         <ProjectsSection />
