@@ -139,8 +139,6 @@ export async function submitProject(email: string, projectData: Omit<Project, 'p
     const data = existingDoc.data();
     existingWinner = data.winner || '';
     existingReviewed = data.reviewed || false;
-    // Delete old doc so Firestore sees next setDoc as a "create" (matches our security rules)
-    await deleteDoc(docRef);
   }
 
   await setDoc(docRef, {

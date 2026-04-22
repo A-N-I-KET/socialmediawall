@@ -375,6 +375,45 @@
    CTA BUTTON (with glow)
    ══════════════════════════════════════ */
 
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 36px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.hero-login-btn:hover {
+  background: #fff;
+  border-color: #F5C400;
+  box-shadow: 6px 8px 0 rgba(245, 196, 0, 0.25);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.hero-login-btn:active {
+  transform: scale(0.96);
+}
+
 .hero-cta-btn {
   position: relative;
   display: inline-flex;
@@ -582,7 +621,13 @@
     z-index: 5;
   }
 
-  .hero-cta-btn { padding: 10px 24px; font-size: 0.9rem; }
+  .hero-cta-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-cta-btn { padding: 10px 24px; font-size: 0.9rem; width: 100%; justify-content: center; }
+  .hero-login-btn { padding: 10px 24px; font-size: 0.9rem; width: 100%; justify-content: center; }
 
   .hero-countdown {
     gap: 6px;
