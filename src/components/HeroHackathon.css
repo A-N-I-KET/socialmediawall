@@ -213,6 +213,7 @@
   gap: 16px;
   margin-bottom: 24px;
   line-height: 1;
+  position: relative;
 }
 
 .hero-headline-bot {
@@ -307,6 +308,21 @@
   91% { opacity: 1; }
   94% { opacity: 0.88; }
   96% { opacity: 1; }
+}
+
+/* ══════════════════════════════════════
+   POWERED BY GEMINI
+   ══════════════════════════════════════ */
+.hero-powered-by {
+  position: absolute;
+  right: 0;
+  bottom: -32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 /* ══════════════════════════════════════
@@ -604,6 +620,11 @@
     font-size: clamp(1.8rem, 9vw, 2.5rem);
     /* Disable glitch on mobile for readability */
     animation: none;
+  }
+
+  .hero-powered-by {
+    position: static;
+    margin-top: 8px;
   }
 
   .hero-date-pill { padding: 6px 20px; font-size: 0.85rem; margin-bottom: 12px; }

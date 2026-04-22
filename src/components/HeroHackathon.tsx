@@ -477,80 +477,65 @@ const HeroHackathon = memo(({ ready = false }: { ready?: boolean }) => {
             <span className="hero-text-blue">TO</span>
           </motion.span>
 
-          {/* Agent Group */}
-          <span style={{ position: 'relative', display: 'inline-flex', justifyContent: 'center' }}>
-            {/* "Agent" — glitch reveal */}
-            <motion.span
-              className="hero-headline-agent"
-              initial={{ opacity: 0, x: 20, scaleX: 0.88 }}
-              animate={
-                ready
-                  ? {
-                      opacity: [0, 0.5, 1, 0.82, 1],
-                      x: [20, -3, 2, -1, 0],
-                      scaleX: [0.88, 1.03, 0.97, 1.01, 1],
-                    }
-                  : { opacity: 0, x: 20, scaleX: 0.88 }
-              }
-              transition={{
-                duration: 0.55,
-                ease: EASE,
-                delay: ready ? T.agent : 0,
-              }}
-            >
-              Agent
-            </motion.span>
+          {/* "Agent" — glitch reveal */}
+          <motion.span
+            className="hero-headline-agent"
+            initial={{ opacity: 0, x: 20, scaleX: 0.88 }}
+            animate={
+              ready
+                ? {
+                    opacity: [0, 0.5, 1, 0.82, 1],
+                    x: [20, -3, 2, -1, 0],
+                    scaleX: [0.88, 1.03, 0.97, 1.01, 1],
+                  }
+                : { opacity: 0, x: 20, scaleX: 0.88 }
+            }
+            transition={{
+              duration: 0.55,
+              ease: EASE,
+              delay: ready ? T.agent : 0,
+            }}
+          >
+            Agent
+          </motion.span>
 
-            {/* ── POWERED BY GEMINI ── */}
-            <motion.a
-              href="https://deepmind.google/technologies/gemini/"
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 10 }}
-              animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-              transition={{
-                type: 'spring',
-                stiffness: 100,
-                damping: 16,
-                delay: ready ? T.agent + 0.3 : 0,
-              }}
-              whileHover={{ scale: 1.05 }}
-              style={{
-                position: 'absolute',
-                top: '100%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                textDecoration: 'none',
-                cursor: 'pointer',
-                marginTop: '4px',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
-                <path d="M14 0C14 7.732 7.732 14 0 14C7.732 14 14 20.268 14 28C14 20.268 20.268 14 28 14C20.268 14 14 7.732 14 0Z"
-                  fill="url(#gemini-grad-hero)" />
-                <defs>
-                  <linearGradient id="gemini-grad-hero" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#4285F4" />
-                    <stop offset="0.5" stopColor="#9A64FE" />
-                    <stop offset="1" stopColor="#EA4335" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <span style={{
-                fontSize: '1.2rem',
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                fontFamily: "'Poppins', sans-serif",
-                color: '#888',
-              }}>
-                Powered by <span style={{ background: 'linear-gradient(135deg, #4285F4, #9A64FE, #EA4335)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 700 }}>Gemini</span>
-              </span>
-            </motion.a>
-          </span>
+          {/* ── POWERED BY GEMINI ── */}
+          <motion.a
+            href="https://deepmind.google/technologies/gemini/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hero-powered-by"
+            initial={{ opacity: 0, y: 10 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+            transition={{
+              type: 'spring',
+              stiffness: 100,
+              damping: 16,
+              delay: ready ? T.agent + 0.3 : 0,
+            }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+              <path d="M14 0C14 7.732 7.732 14 0 14C7.732 14 14 20.268 14 28C14 20.268 20.268 14 28 14C20.268 14 14 7.732 14 0Z"
+                fill="url(#gemini-grad-hero)" />
+              <defs>
+                <linearGradient id="gemini-grad-hero" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#4285F4" />
+                  <stop offset="0.5" stopColor="#9A64FE" />
+                  <stop offset="1" stopColor="#EA4335" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span style={{
+              fontSize: '1.2rem',
+              fontWeight: 600,
+              letterSpacing: '0.06em',
+              fontFamily: "'Poppins', sans-serif",
+              color: '#888',
+            }}>
+              Powered by <span style={{ background: 'linear-gradient(135deg, #4285F4, #9A64FE, #EA4335)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 700 }}>Gemini</span>
+            </span>
+          </motion.a>
         </h1>
 
         {/* ── PHASE 4: DATE PILL ── */}
