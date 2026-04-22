@@ -283,16 +283,7 @@ const Index = () => {
             <p className="hack-section-subtitle">Backed by amazing partners who make this possible</p>
           </motion.div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '1.5rem',
-              maxWidth: '1000px',
-              margin: '0 auto',
-              padding: '2rem 1.5rem',
-            }}
-          >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-[1000px] mx-auto px-4 sm:px-6 py-8">
             {[
               { name: 'MLH', src: '/mlhsponsor.png', url: 'https://mlh.io' },
               { name: 'Mastra', src: '/mastra.png', url: 'https://mastra.ai' },
@@ -307,19 +298,9 @@ const Index = () => {
                 style={{ textDecoration: 'none' }}
               >
               <motion.div
+                className="flex flex-col items-center justify-center p-6 sm:p-10 bg-white/85 border-2 border-black/5 rounded-3xl backdrop-blur-md cursor-pointer overflow-hidden"
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '2.5rem 2rem',
-                  background: 'rgba(255, 255, 255, 0.85)',
-                  border: '2px solid rgba(0, 0, 0, 0.05)',
-                  borderRadius: '1.5rem',
-                  backdropFilter: 'blur(12px)',
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
-                  cursor: 'pointer',
-                  overflow: 'hidden',
                 }}
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}

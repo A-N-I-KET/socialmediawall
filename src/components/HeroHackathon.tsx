@@ -477,7 +477,8 @@ const HeroHackathon = memo(({ ready = false }: { ready?: boolean }) => {
             <span className="hero-text-blue">TO</span>
           </motion.span>
 
-          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+          {/* Agent Group */}
+          <span style={{ position: 'relative', display: 'inline-flex', justifyContent: 'center' }}>
             {/* "Agent" — glitch reveal */}
             <motion.span
               className="hero-headline-agent"
@@ -515,12 +516,17 @@ const HeroHackathon = memo(({ ready = false }: { ready?: boolean }) => {
               }}
               whileHover={{ scale: 1.05 }}
               style={{
+                position: 'absolute',
+                top: '100%',
+                left: '50%',
+                transform: 'translateX(-50%)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
                 textDecoration: 'none',
                 cursor: 'pointer',
-                marginTop: '0',
+                marginTop: '4px',
+                whiteSpace: 'nowrap',
               }}
             >
               <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
