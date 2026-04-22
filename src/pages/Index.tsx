@@ -266,6 +266,100 @@ const Index = () => {
         </motion.div>
 
         {/* ═══════════════════════════════════════
+           SPONSORS SECTION
+           ═══════════════════════════════════════ */}
+        <section className="hack-section" id="sponsors-section" style={{ paddingTop: '4rem', paddingBottom: '4rem' }}>
+          <div className="hack-section-grid" aria-hidden="true" />
+
+          <motion.div
+            className="hack-section-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }}
+            transition={{ type: 'spring', stiffness: 100, damping: 18 }}
+          >
+            <span className="hack-section-tag">🤝 Our Partners</span>
+            <h2 className="hack-section-title">Sponsors</h2>
+            <p className="hack-section-subtitle">Backed by amazing partners who make this possible</p>
+          </motion.div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '1.5rem',
+              maxWidth: '1000px',
+              margin: '0 auto',
+              padding: '2rem 1.5rem',
+            }}
+          >
+            {[
+              { name: 'MLH', src: '/mlhsponsor.png', url: 'https://mlh.io' },
+              { name: 'Mastra', src: '/mastra.png', url: 'https://mastra.ai' },
+              { name: 'Pujo Planner', src: '/pujo.png', url: 'https://pujoplanner.com' },
+              { name: 'HackerRank', src: '/hacker.png', url: 'https://hackerrank.com' },
+            ].map((sponsor, i) => (
+              <a
+                key={sponsor.name}
+                href={sponsor.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: 'none' }}
+              >
+              <motion.div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '2.5rem 2rem',
+                  background: 'rgba(255, 255, 255, 0.85)',
+                  border: '2px solid rgba(0, 0, 0, 0.05)',
+                  borderRadius: '1.5rem',
+                  backdropFilter: 'blur(12px)',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                }}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ type: 'spring', stiffness: 120, damping: 16, delay: 0.1 + i * 0.1 }}
+                whileHover={{ y: -8, boxShadow: '0 16px 40px rgba(0, 0, 0, 0.1)', scale: 1.02 }}
+              >
+                <img
+                  src={sponsor.src}
+                  alt={sponsor.name}
+                  style={{
+                    width: '100%',
+                    maxHeight: '160px',
+                    objectFit: 'contain',
+                    transition: 'transform 0.3s ease, filter 0.3s ease',
+                    filter: 'grayscale(10%)',
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.filter = 'grayscale(0%)'; e.currentTarget.style.transform = 'scale(1.05)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.filter = 'grayscale(10%)'; e.currentTarget.style.transform = 'scale(1)'; }}
+                />
+                <span
+                  style={{
+                    marginTop: '1rem',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.06em',
+                    color: '#555',
+                    fontFamily: "'Poppins', sans-serif",
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {sponsor.name}
+                </span>
+              </motion.div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════
            PRIZES SECTION
            ═══════════════════════════════════════ */}
         <section className="hack-section" id="prizes-section">
