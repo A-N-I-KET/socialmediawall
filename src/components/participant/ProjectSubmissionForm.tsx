@@ -122,6 +122,22 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
       toast({ title: 'Required', description: 'Short description is required.', variant: 'destructive' });
       return;
     }
+    if (!projectLinks.some(l => l.trim())) {
+      toast({ title: 'Required', description: 'At least one project link is required.', variant: 'destructive' });
+      return;
+    }
+    if (!problemItSolves.trim()) {
+      toast({ title: 'Required', description: 'Problem it solves is required.', variant: 'destructive' });
+      return;
+    }
+    if (!challengesRanInto.trim()) {
+      toast({ title: 'Required', description: 'Challenges ran into is required.', variant: 'destructive' });
+      return;
+    }
+    if (technologiesUsed.length === 0) {
+      toast({ title: 'Required', description: 'At least one technology used is required.', variant: 'destructive' });
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -192,7 +208,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
 
       {/* Project Links */}
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-2">Project Links</label>
+        <label className="block text-sm font-semibold text-gray-800 mb-2">Project Links *</label>
         <div className="space-y-2">
           {projectLinks.map((link, idx) => (
             <div key={idx} className="flex gap-2">
@@ -202,6 +218,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
                 onChange={(e) => updateLink(idx, e.target.value)}
                 className="flex-1 px-4 py-2.5 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm"
                 placeholder="https://github.com/your-project"
+                required={idx === 0}
               />
               {projectLinks.length > 1 && (
                 <button
@@ -227,7 +244,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
       {/* Problem It Solves */}
       <div>
         <label className="block text-sm font-semibold text-gray-800 mb-2">
-          Problem It Solves <span className="text-gray-400 font-normal">(Markdown supported)</span>
+          Problem It Solves * <span className="text-gray-400 font-normal">(Markdown supported)</span>
         </label>
         <p className="text-xs text-gray-400 mb-2">Describe what people can use it for, or how it makes existing tasks easier/safer.</p>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -236,6 +253,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
             onChange={(e) => setProblemItSolves(e.target.value)}
             className="w-full min-h-[200px] px-4 py-3 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm font-mono resize-y"
             placeholder="Write in markdown..."
+            required
           />
           <div className="min-h-[200px] max-h-[400px] overflow-y-auto px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 text-sm prose prose-sm max-w-none">
             {problemItSolves ? (
@@ -250,7 +268,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
       {/* Challenges Ran Into */}
       <div>
         <label className="block text-sm font-semibold text-gray-800 mb-2">
-          Challenges I Ran Into <span className="text-gray-400 font-normal">(Markdown supported)</span>
+          Challenges I Ran Into * <span className="text-gray-400 font-normal">(Markdown supported)</span>
         </label>
         <p className="text-xs text-gray-400 mb-2">Tell us about any specific bug or hurdle you ran into while building this project. How did you get over it?</p>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -259,6 +277,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
             onChange={(e) => setChallengesRanInto(e.target.value)}
             className="w-full min-h-[200px] px-4 py-3 rounded-xl border-2 border-gray-100 bg-white text-gray-900 focus:outline-none focus:border-[#F5C400] focus:ring-4 focus:ring-[#F5C400]/10 transition-all text-sm font-mono resize-y"
             placeholder="Write in markdown..."
+            required
           />
           <div className="min-h-[200px] max-h-[400px] overflow-y-auto px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50 text-sm prose prose-sm max-w-none">
             {challengesRanInto ? (
@@ -272,7 +291,7 @@ const ProjectSubmissionForm = ({ participantEmail, onSubmitted, existingProject 
 
       {/* Technologies Used */}
       <div>
-        <label className="block text-sm font-semibold text-gray-800 mb-2">Technologies Used</label>
+        <label className="block text-sm font-semibold text-gray-800 mb-2">Technologies Used *</label>
         <div className="flex gap-2 mb-2">
           <input
             type="text"
