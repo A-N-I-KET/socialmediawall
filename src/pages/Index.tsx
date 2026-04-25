@@ -539,13 +539,14 @@ const Index = () => {
 
           <div className="hack-cards-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
             {[
-              { time: '9:00 AM', title: 'Check In & Opening Ceremony', desc: 'Welcome! Get your swags and settle in.', accent: '#1D539F' },
+              { time: '8:30 AM - 9:30 AM', title: 'Check In', desc: 'Welcome! Get your swags and settle in.', accent: '#1D539F' },
               { time: '9:30 AM', title: 'Hacking Starts', desc: 'Start building your projects.', accent: '#F5C400' },
-              { time: '11:30 AM', title: 'Workshop', desc: 'Learn new skills from experts.', accent: '#FF6B6B' },
-              { time: '1:00 PM', title: 'Lunch Time', desc: 'Refuel with some amazing food.', accent: '#A3E635' },
-              { time: '2:30 PM', title: 'Hacking & Submission Ends', desc: 'Wrap up and submit your projects.', accent: '#FF3B30' },
-              { time: '2:30 PM - 3:00 PM', title: 'Judging', desc: 'Present your demos to the judges.', accent: '#8B5CF6' },
-              { time: '3:00 PM - 4:00 PM', title: 'Closing Ceremony', desc: 'Winner announcements and final goodbye.', accent: '#FB923C' }
+              { time: '9:30 AM - 3:30 PM', title: 'Best Active Hacker Mini Event', desc: 'Participate and stay active to win exciting rewards.', accent: '#14B8A6' },
+              { time: '11:30 AM - 12:00 PM', title: 'HackerRank Mini Event', desc: 'Show off your coding skills in this mini challenge.', accent: '#FF6B6B' },
+              { time: '1:00 PM - 2:00 PM', title: 'Lunch', desc: 'Refuel with some amazing food.', accent: '#A3E635' },
+              { time: '3:00 PM', title: 'Hacking & Submission Ends', desc: 'Wrap up and submit your projects.', accent: '#FF3B30' },
+              { time: '3:00 PM - 3:30 PM', title: 'Judging', desc: 'Present your demos to the judges.', accent: '#8B5CF6' },
+              { time: '3:30 PM - 4:30 PM', title: 'Closing Ceremony', desc: 'Winner announcements and final goodbye.', accent: '#FB923C' }
             ].map((evt, idx) => (
               <motion.div
                 key={evt.title + idx}

@@ -9,7 +9,7 @@ import Admin from "./pages/Admin";
 import ParticipantLogin from "./pages/ParticipantLogin";
 import ParticipantSubmission from "./pages/ParticipantSubmission";
 import NotFound from "./pages/NotFound";
-
+import Timer from "./pages/Timer";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -24,6 +24,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/participant-login" element={<ParticipantLogin />} />
             <Route path="/submit" element={<ParticipantSubmission />} />
+            <Route path="/timer" element={<Timer />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
