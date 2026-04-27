@@ -18,6 +18,7 @@ const ProjectDetailModal = ({ project, onClose }: ProjectDetailModalProps) => {
       case '1st': return { label: '🥇 1st Place Winner', color: '#F5C400', bg: 'rgba(245, 196, 0, 0.12)' };
       case '1st_runner_up': return { label: '🥈 1st Runner Up', color: '#9CA3AF', bg: 'rgba(156, 163, 175, 0.12)' };
       case '2nd_runner_up': return { label: '🥉 2nd Runner Up', color: '#CD7F32', bg: 'rgba(205, 127, 50, 0.12)' };
+      case '3rd_runner_up': return { label: '🏅 3rd Runner Up', color: '#8B5CF6', bg: 'rgba(139, 92, 246, 0.12)' };
       default: return null;
     }
   };
