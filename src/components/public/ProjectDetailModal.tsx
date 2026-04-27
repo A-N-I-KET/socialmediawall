@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Project } from '@/utils/firestoreHelpers';
@@ -10,6 +10,18 @@ interface ProjectDetailModalProps {
 
 const ProjectDetailModal = ({ project, onClose }: ProjectDetailModalProps) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (project) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [project]);
 
   if (!project) return null;
 
