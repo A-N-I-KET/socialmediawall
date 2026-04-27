@@ -13,6 +13,7 @@ const WINNER_OPTIONS = [
   { value: '1st', label: '🥇 1st Place' },
   { value: '1st_runner_up', label: '🥈 1st Runner Up' },
   { value: '2nd_runner_up', label: '🥉 2nd Runner Up' },
+  { value: '3rd_runner_up', label: '🏅 3rd Runner Up' },
 ];
 
 const WinnerSelector = ({ email, currentWinner, onUpdate }: WinnerSelectorProps) => {

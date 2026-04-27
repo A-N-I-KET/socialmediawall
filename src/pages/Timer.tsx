@@ -199,220 +199,50 @@ const InteractiveShape = memo(({
 });
 
 /* ══════════════════════════════════════════════
-   COUNTDOWN CARD
-   ══════════════════════════════════════════════ */
-
-const CountdownCard = memo(({ value, label }: { value: number; label: string }) => {
-  const display = value.toString().padStart(2, '0');
-
-  return (
-    <div className="countdown-card" style={{ transform: 'scale(1.5)', margin: '0 25px' }}>
-      <div className="countdown-card-inner" style={{ minWidth: '90px', height: '110px' }}>
-        <AnimatePresence mode="popLayout">
-          <motion.span
-            key={display}
-            className="countdown-card-value"
-            style={{ fontSize: '4.5rem' }}
-            initial={{ y: -18, opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
-            animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ y: 18, opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
-            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-          >
-            {display}
-          </motion.span>
-        </AnimatePresence>
-      </div>
-      <span className="countdown-card-label" style={{ fontSize: '1rem', marginTop: '16px' }}>{label}</span>
-    </div>
-  );
-});
-
-/* ══════════════════════════════════════════════
    COUNTDOWN TIMER
    ══════════════════════════════════════════════ */
 
 const CountdownTimer = memo(({ ready = true }: { ready?: boolean }) => {
-  // Start: April 27, 2026, 09:30:00 (9:30 AM)
-  const startDate = useMemo(() => new Date('2026-04-27T09:30:00').getTime(), []);
-  // Target: April 27, 2026, 15:30:00 (3:30 PM)
-  const targetDate = useMemo(() => new Date('2026-04-27T15:30:00').getTime(), []);
-  
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [hasEnded, setHasEnded] = useState(false);
-
   useEffect(() => {
-    let wasEnded = false;
-    const tick = () => {
-      const now = Date.now();
-      let diff = 0;
+    const duration = 15 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
 
-      if (now < startDate) {
-        // Timer hasn't started yet, show the total duration
-        diff = targetDate - startDate;
-      } else if (now >= startDate && now < targetDate) {
-        // Timer is running
-        diff = targetDate - now;
-      } else {
-        // Timer has ended
-        diff = 0;
-        if (!wasEnded) {
-          wasEnded = true;
-          setHasEnded(true);
-        }
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
       }
 
-      if (diff > 0) {
-        setTimeLeft({
-          days: Math.floor(diff / 86400000),
-          hours: Math.floor((diff % 86400000) / 3600000),
-          minutes: Math.floor((diff % 3600000) / 60000),
-          seconds: Math.floor((diff % 60000) / 1000),
-        });
-      } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      }
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [startDate, targetDate]);
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
 
-  useEffect(() => {
-    if (hasEnded) {
-      const duration = 15 * 1000;
-      const animationEnd = Date.now() + duration;
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-      const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
-      const interval = setInterval(function() {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          return clearInterval(interval);
-        }
-
-        const particleCount = 50 * (timeLeft / duration);
-        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-        confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-      }, 250);
-
-      return () => clearInterval(interval);
-    }
-  }, [hasEnded]);
-
-  const entries = [
-    { label: 'Hours', value: timeLeft.hours },
-    { label: 'Min', value: timeLeft.minutes },
-    { label: 'Sec', value: timeLeft.seconds },
-  ];
-
-  if (hasEnded) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: 'spring', bounce: 0.5, duration: 1 }}
-        className="hero-countdown"
-        style={{ marginTop: '3rem', flexDirection: 'column', alignItems: 'center' }}
-      >
-        <h2 style={{ fontSize: '7rem', fontWeight: 900, background: 'linear-gradient(135deg, #FF6B6B, #F5C400)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.02em', textShadow: '0 10px 40px rgba(245, 196, 0, 0.3)', textAlign: 'center', lineHeight: '1.1' }}>
-          TIME'S UP!
-        </h2>
-        <p style={{ fontSize: '2rem', fontWeight: 600, color: '#555', marginTop: '1.5rem', textAlign: 'center' }}>
-          Congratulations Hackers! Drop your keyboards.
-        </p>
-      </motion.div>
-    );
-  }
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="hero-countdown" style={{ marginTop: '3rem', gap: '2.5rem' }}>
-      {entries.map((item, idx) => (
-        <motion.div
-          key={item.label}
-          initial={{ opacity: 0, y: 28 }}
-          animate={
-            ready
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 28 }
-          }
-          transition={{
-            type: 'spring',
-            stiffness: 130,
-            damping: 16,
-            delay: ready ? T.countdown + idx * T.countdownStagger : 0,
-          }}
-        >
-          <CountdownCard value={item.value} label={item.label} />
-        </motion.div>
-      ))}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+      transition={{ type: 'spring', bounce: 0.5, duration: 1, delay: ready ? T.countdown : 0 }}
+      className="hero-countdown"
+      style={{ marginTop: '3rem', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <h2 style={{ fontSize: 'clamp(3.5rem, 10vw, 7rem)', fontWeight: 900, background: 'linear-gradient(135deg, #14B8A6, #A3E635)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.02em', textShadow: '0 10px 40px rgba(20, 184, 166, 0.3)', textAlign: 'center', lineHeight: '1.1' }}>
+        IT'S A WRAP!
+      </h2>
+      <p style={{ fontSize: 'clamp(1.2rem, 4vw, 2rem)', fontWeight: 600, color: '#555', marginTop: '1.5rem', textAlign: 'center', padding: '0 1rem' }}>
+        Thank you all for making it a massive success.
+      </p>
+    </motion.div>
   );
 });
 
-/* ══════════════════════════════════════════════
-   ONGOING EVENTS
-   ══════════════════════════════════════════════ */
-
-const SCHEDULE_EVENTS = [
-  { title: 'Check In', start: new Date('2026-04-27T08:30:00').getTime(), end: new Date('2026-04-27T09:30:00').getTime(), accent: '#1D539F' },
-  { title: 'Hacking', start: new Date('2026-04-27T09:30:00').getTime(), end: new Date('2026-04-27T15:30:00').getTime(), accent: '#F5C400' },
-  { title: 'Best Active Hacker', start: new Date('2026-04-27T09:30:00').getTime(), end: new Date('2026-04-27T15:30:00').getTime(), accent: '#14B8A6' },
-  { title: 'HackerRank Mini Event', start: new Date('2026-04-27T11:30:00').getTime(), end: new Date('2026-04-27T12:00:00').getTime(), accent: '#FF6B6B' },
-  { title: 'Lunch', start: new Date('2026-04-27T13:15:00').getTime(), end: new Date('2026-04-27T14:15:00').getTime(), accent: '#A3E635' },
-  { title: 'Judging', start: new Date('2026-04-27T15:30:00').getTime(), end: new Date('2026-04-27T16:00:00').getTime(), accent: '#8B5CF6' },
-  { title: 'Closing Ceremony', start: new Date('2026-04-27T16:00:00').getTime(), end: new Date('2026-04-27T16:30:00').getTime(), accent: '#FB923C' }
-];
-
-const OngoingEvents = () => {
-  const [now, setNow] = useState(Date.now());
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const ongoing = SCHEDULE_EVENTS.filter(e => now >= e.start && now < e.end);
-  const upcoming = SCHEDULE_EVENTS.filter(e => now < e.start).sort((a, b) => a.start - b.start);
-
-  if (ongoing.length > 0) {
-    return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5, type: 'spring' }} className="ongoing-events" style={{ marginTop: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Happening Now</h2>
-        <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '800px' }}>
-          <AnimatePresence>
-            {ongoing.map(e => (
-              <motion.div key={e.title} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="ongoing-badge" style={{ background: `${e.accent}15`, border: `2px solid ${e.accent}50`, color: e.accent, padding: '12px 24px', borderRadius: '50px', fontWeight: 700, fontSize: '1.5rem', boxShadow: `0 4px 20px ${e.accent}20` }}>
-                <span className="relative flex h-3 w-3 inline-flex mr-3" style={{ top: '-2px' }}>
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: e.accent }} />
-                  <span className="relative inline-flex rounded-full h-3 w-3" style={{ background: e.accent }} />
-                </span>
-                {e.title}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      </motion.div>
-    );
-  } else if (upcoming.length > 0) {
-    const next = upcoming[0];
-    return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5, type: 'spring' }} className="ongoing-events" style={{ marginTop: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Up Next</h2>
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="ongoing-badge" style={{ background: `${next.accent}15`, border: `2px solid ${next.accent}50`, color: next.accent, padding: '12px 24px', borderRadius: '50px', fontWeight: 700, fontSize: '1.5rem', boxShadow: `0 4px 20px ${next.accent}20` }}>
-          {next.title}
-        </motion.div>
-      </motion.div>
-    );
-  } else {
-     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5, type: 'spring' }} className="ongoing-events" style={{ marginTop: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#888', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Hackathon Concluded</h2>
-      </motion.div>
-    );
-  }
-};
 
 /* ══════════════════════════════════════════════
    MAIN TIMER PAGE
@@ -571,7 +401,7 @@ const Timer = () => {
               }}
               style={{ fontSize: '6vw', letterSpacing: '-0.02em', WebkitTextStroke: '2px #000' }}
             >
-              Hacking Ends In
+              Event Concluded
             </motion.span>
           </h1>
 
@@ -579,9 +409,6 @@ const Timer = () => {
 
           {/* ── PHASE 5: COUNTDOWN ── */}
           <CountdownTimer ready={ready} />
-
-          {/* ── PHASE 6: ONGOING EVENTS ── */}
-          <OngoingEvents />
         </div>
       </section>
     </div>

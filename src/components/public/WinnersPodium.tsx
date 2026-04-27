@@ -34,6 +34,15 @@ const WINNER_CONFIG = {
     gradient: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(205,127,50,0.06) 100%)',
     order: 2,
   },
+  '3rd_runner_up': {
+    label: '3rd Runner Up',
+    emoji: '🏅',
+    accentColor: '#8B5CF6',
+    accentBg: 'rgba(139, 92, 246, 0.08)',
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+    gradient: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(139,92,246,0.06) 100%)',
+    order: 3,
+  },
 };
 
 const WinnersPodium = ({ projects, onViewDetails }: WinnersPodiumProps) => {
@@ -59,7 +68,7 @@ const WinnersPodium = ({ projects, onViewDetails }: WinnersPodiumProps) => {
         <span className="hack-section-tag">🏆 Winners</span>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
         {winners.map((project, idx) => {
           const config = WINNER_CONFIG[project.winner as keyof typeof WINNER_CONFIG];
           return (

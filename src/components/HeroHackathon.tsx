@@ -203,87 +203,25 @@ const InteractiveShape = memo(({
 });
 
 /* ══════════════════════════════════════════════
-   COUNTDOWN CARD (flip animation on change)
-   ══════════════════════════════════════════════ */
-
-const CountdownCard = memo(({ value, label }: { value: number; label: string }) => {
-  const display = value.toString().padStart(2, '0');
-
-  return (
-    <div className="countdown-card">
-      <div className="countdown-card-inner">
-        <AnimatePresence mode="popLayout">
-          <motion.span
-            key={display}
-            className="countdown-card-value"
-            initial={{ y: -18, opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
-            animate={{ y: 0, opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ y: 18, opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
-            transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-          >
-            {display}
-          </motion.span>
-        </AnimatePresence>
-      </div>
-      <span className="countdown-card-label">{label}</span>
-    </div>
-  );
-});
-
-/* ══════════════════════════════════════════════
    COUNTDOWN TIMER
    ══════════════════════════════════════════════ */
 
 const CountdownTimer = memo(({ ready = false }: { ready?: boolean }) => {
-  const targetDate = useMemo(() => new Date('2026-04-27T09:30:00').getTime(), []);
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  useEffect(() => {
-    const tick = () => {
-      const diff = targetDate - Date.now();
-      if (diff > 0) {
-        setTimeLeft({
-          days: Math.floor(diff / 86400000),
-          hours: Math.floor((diff % 86400000) / 3600000),
-          minutes: Math.floor((diff % 3600000) / 60000),
-          seconds: Math.floor((diff % 60000) / 1000),
-        });
-      }
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [targetDate]);
-
-  const entries = [
-    { label: 'Days', value: timeLeft.days },
-    { label: 'Hours', value: timeLeft.hours },
-    { label: 'Min', value: timeLeft.minutes },
-    { label: 'Sec', value: timeLeft.seconds },
-  ];
-
   return (
-    <div className="hero-countdown">
-      {entries.map((item, idx) => (
-        <motion.div
-          key={item.label}
-          initial={{ opacity: 0, y: 28 }}
-          animate={
-            ready
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: 28 }
-          }
-          transition={{
-            type: 'spring',
-            stiffness: 130,
-            damping: 16,
-            delay: ready ? T.countdown + idx * T.countdownStagger : 0,
-          }}
-        >
-          <CountdownCard value={item.value} label={item.label} />
-        </motion.div>
-      ))}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+      transition={{ type: 'spring', bounce: 0.5, duration: 1, delay: ready ? T.countdown : 0 }}
+      className="hero-countdown"
+      style={{ marginTop: '3rem', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 900, background: 'linear-gradient(135deg, #14B8A6, #A3E635)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.02em', textShadow: '0 10px 40px rgba(20, 184, 166, 0.3)', textAlign: 'center', lineHeight: '1.1' }}>
+        EVENT CONCLUDED
+      </h2>
+      <p style={{ fontSize: 'clamp(1rem, 3.5vw, 1.5rem)', fontWeight: 600, color: '#888', marginTop: '1rem', textAlign: 'center', padding: '0 1rem' }}>
+        Thank you all for making it a massive success.
+      </p>
+    </motion.div>
   );
 });
 
