@@ -234,8 +234,8 @@ const CountdownCard = memo(({ value, label }: { value: number; label: string }) 
 const CountdownTimer = memo(({ ready = true }: { ready?: boolean }) => {
   // Start: April 27, 2026, 09:30:00 (9:30 AM)
   const startDate = useMemo(() => new Date('2026-04-27T09:30:00').getTime(), []);
-  // Target: April 27, 2026, 15:00:00 (3:00 PM)
-  const targetDate = useMemo(() => new Date('2026-04-27T15:00:00').getTime(), []);
+  // Target: April 27, 2026, 15:30:00 (3:30 PM)
+  const targetDate = useMemo(() => new Date('2026-04-27T15:30:00').getTime(), []);
   
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [hasEnded, setHasEnded] = useState(false);
@@ -357,12 +357,12 @@ const CountdownTimer = memo(({ ready = true }: { ready?: boolean }) => {
 
 const SCHEDULE_EVENTS = [
   { title: 'Check In', start: new Date('2026-04-27T08:30:00').getTime(), end: new Date('2026-04-27T09:30:00').getTime(), accent: '#1D539F' },
-  { title: 'Hacking', start: new Date('2026-04-27T09:30:00').getTime(), end: new Date('2026-04-27T15:00:00').getTime(), accent: '#F5C400' },
+  { title: 'Hacking', start: new Date('2026-04-27T09:30:00').getTime(), end: new Date('2026-04-27T15:30:00').getTime(), accent: '#F5C400' },
   { title: 'Best Active Hacker', start: new Date('2026-04-27T09:30:00').getTime(), end: new Date('2026-04-27T15:30:00').getTime(), accent: '#14B8A6' },
   { title: 'HackerRank Mini Event', start: new Date('2026-04-27T11:30:00').getTime(), end: new Date('2026-04-27T12:00:00').getTime(), accent: '#FF6B6B' },
-  { title: 'Lunch', start: new Date('2026-04-27T13:00:00').getTime(), end: new Date('2026-04-27T14:00:00').getTime(), accent: '#A3E635' },
-  { title: 'Judging', start: new Date('2026-04-27T15:00:00').getTime(), end: new Date('2026-04-27T15:30:00').getTime(), accent: '#8B5CF6' },
-  { title: 'Closing Ceremony', start: new Date('2026-04-27T15:30:00').getTime(), end: new Date('2026-04-27T16:30:00').getTime(), accent: '#FB923C' }
+  { title: 'Lunch', start: new Date('2026-04-27T13:15:00').getTime(), end: new Date('2026-04-27T14:15:00').getTime(), accent: '#A3E635' },
+  { title: 'Judging', start: new Date('2026-04-27T15:30:00').getTime(), end: new Date('2026-04-27T16:00:00').getTime(), accent: '#8B5CF6' },
+  { title: 'Closing Ceremony', start: new Date('2026-04-27T16:00:00').getTime(), end: new Date('2026-04-27T16:30:00').getTime(), accent: '#FB923C' }
 ];
 
 const OngoingEvents = () => {
